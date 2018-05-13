@@ -1,9 +1,8 @@
 <#
 .Synopsis
 Converts a size from a specific format to another format.
-Supports formats based on 10^3 (SI notation, e.g. KB) and on 2^10 (binary notation, e.g. KiB).
+Supports formats based on 10^3 (decimal or SI notation, e.g. KB) and on 2^10 (binary notation, e.g. KiB).
 .Notes
-(From https://physics.nist.gov/cuu/Units/binary.html)
 Prefixes for binary multiples
  Factor 	Name 	Symbol 	Origin	Derivation 
  210	kibi	Ki	kilobinary: (210)1	kilo: (103)1
@@ -20,6 +19,12 @@ one mebibyte	 1 MiB = 220 B = 1 048 576 B
 one megabyte	 1 MB = 106 B = 1 000 000 B
 one gibibyte	 1 GiB = 230 B = 1 073 741 824 B
 one gigabyte	 1 GB = 109 B = 1 000 000 000 B
+.Link
+Get-Size
+Get-SizeConverted
+.Link
+https://physics.nist.gov/cuu/Units/binary.html
+https://en.wikipedia.org/wiki/Binary_prefix
 #>
 function Convert-Size {
     [CmdletBinding()]

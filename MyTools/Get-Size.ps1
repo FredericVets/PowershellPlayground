@@ -1,6 +1,9 @@
 <#
 .Synopsis
 Itterates recursively through a directory structure and returns the accumulated file size in bytes.
+.Link
+Convert-Size
+Get-SizeConverted
 #>
 function Get-Size {
     [CmdletBinding()]
