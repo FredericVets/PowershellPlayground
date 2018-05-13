@@ -1,28 +1,38 @@
 <#
-Full, ShowOnlyRelevant
-SI, Binary, Both
+Choice for SI, Binary, Both?
 #>
-function Get-SizeFormatted {
+function Get-SizeConverted {
     [CmdletBinding()]
     Param(
         [Parameter(Mandatory=$true, Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
         [ValidateScript({ Test-Path -LiteralPath $_ })]
         [Alias("Path")]
         [string[]]
-        $LiteralPath
+        $LiteralPath,
+        [switch]
+        [Alias("Human")]
+        $ShowOnlyRelevant
     )
     Process {
         foreach ($item in $LiteralPath) {
             $size = Get-Size $item
 
-            New-SizeObject $item $size
+            $allSizes = ConvertToAllSizes $size
+            if ($ShowOnlyRelevant) {
+                $relevantSizes = GetRelevantSizes $allSizes
+                CreateSizeObject $item $relevantSizes
+
+                continue
+            }
+
+            # Show full size info.
+            CreateSizeObject $item $allSizes
         }
     }
 }
 
-function New-SizeObject([string]$literalPath, [long]$sizeBytes) {
-    $props = [Ordered]@{
-        LiteralPath = $literalPath
+function ConvertToAllSizes([long]$sizeBytes) {
+    return [Ordered]@{
         Bits = Convert-Size -From B -To b -Value $sizeBytes
         Bytes = $sizeBytes
         KiB = Convert-Size -From B -To KiB -Value $sizeBytes
@@ -34,6 +44,47 @@ function New-SizeObject([string]$literalPath, [long]$sizeBytes) {
         GB = Convert-Size -From B -To GB -Value $sizeBytes
         TB = Convert-Size -From B -To TB -Value $sizeBytes
     }
+}
 
-    return New-Object -TypeName PSObject -Property $props
+function GetRelevantSizes($allSizes) {
+    # Always add Bytes.
+    $relevant = [Ordered]@{ "Bytes" = $allSizes.Bytes }
+
+    if (IsRelevantForBinaryUnit($allSizes.KiB)) {
+        $relevant.Add("KiB", $allSizes.KiB)
+        $relevant.Add("KB", $allSizes.KB)
+
+        return $relevant
+    }
+    if (IsRelevantForBinaryUnit($allSizes.MiB)) {
+        $relevant.Add("MiB", $allSizes.MiB)
+        $relevant.Add("MB", $allSizes.MB)
+
+        return $relevant
+    }
+    if (IsRelevantForBinaryUnit($allSizes.GiB)) {
+        $relevant.Add("GiB", $allSizes.GiB)
+        $relevant.Add("GB", $allSizes.GB)
+
+        return $relevant
+    }
+    if (IsRelevantForBinaryUnit($allSizes.TiB)) {
+        $relevant.Add("TiB", $allSizes.TiB)
+        $relevant.Add("TB", $allSizes.TB)
+
+        return $relevant
+    }
+
+    return $relevant
+}
+
+function CreateSizeObject([string]$literalPath, $sizes) {
+    $obj = New-Object -TypeName PSObject -Property $sizes
+    $obj | Add-Member -MemberType NoteProperty -Name "LiteralPath" -Value $literalPath
+
+    return $obj
+}
+
+function IsRelevantForBinaryUnit([double]$size) {
+    return ($size -ge 1) -and ($size -lt 1024)
 }
