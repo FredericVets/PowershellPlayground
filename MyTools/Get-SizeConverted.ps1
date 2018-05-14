@@ -88,7 +88,7 @@ function Get-SizeConverted {
         [int]
 		$Precision = 4
     )
-	Process {
+    Begin {
         <#  These constants are created in the local scope. 
             When a function is executed from within this scope, a new child scope is created. Inside of this new 
             scope, these constants are visible from it's parent or ancestor scopes.
@@ -97,7 +97,8 @@ function Get-SizeConverted {
         New-Variable -Name DECIMAL_UNITS -Value 'KB', 'MB', 'GB', 'TB', 'PB' -Option Constant
         New-Variable -Name BINARY_BASE -Value 1024 -Option Constant
         New-Variable -Name DECIMAL_BASE -Value 1000 -Option Constant
-        
+    }
+	Process {       
         foreach ($path in $LiteralPath) {
 			[long]$sizeInByte = Get-Size -LiteralPath $path
 			$sizes = ConvertToSizesForUnitType $UnitType $sizeInByte $Precision $ShowOnlyMeaningful

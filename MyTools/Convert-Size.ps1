@@ -77,11 +77,12 @@ function Convert-Size {
 		$To,
 		[int]
 		$Precision = 4
-	)
-	Process {
+    )
+    Begin {
         New-Variable -Name BINARY_BASE -Value 1024 -Option Constant
         New-Variable -Name DECIMAL_BASE -Value 1000 -Option Constant
-
+    }
+	Process {
 		foreach ($size in $Value) {
 			Write-Verbose "Converting $size $From to $To."
 
