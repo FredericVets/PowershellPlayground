@@ -1,11 +1,9 @@
 <#
 .Synopsis
 Simulates the behavior of the Unix touch command.
+.Description
 If the provided path(s) exist, the LastWriteTime will be set to the current time. Otherwise a new file will be created 
 at the specified path.
-.Notes
-Supports -WhatIf and -Confirm.
-(Directly or through $WhatIfPreference and $ConfirmPreference.)
 .Example
 Update-File test.txt
 .Example
@@ -16,6 +14,9 @@ What if: Performing the operation "Creating file." on target "idontexist.txt".
 .Example
 Update-File iDOexist.txt -WhatIf
 What if: Performing the operation "Setting LastWriteTime to current timestamp." on target "iDOexist.txt".
+.Notes
+Supports -WhatIf and -Confirm.
+(Directly or through $WhatIfPreference and $ConfirmPreference.)
 #>
 function Update-File {
 	[CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='Low')]
@@ -36,8 +37,10 @@ function Update-File {
 			}
 
 			if ($PSCmdlet.ShouldProcess($item, 'Creating file.')) {
-				# Same as echo $null >> $item.
-				Add-Content -Path $item -Value $null
+                # echo $null >> $item.
+                # Same as the echo statement :
+                # Add-Content -Path $item -Value $null
+                New-Item -Type File -Path $item
 			}
 		}
 	}

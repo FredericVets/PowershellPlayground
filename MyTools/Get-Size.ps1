@@ -1,8 +1,22 @@
 <#
 .Synopsis
-Itterates recursively through a directory structure and returns the accumulated file size in bytes.
+Gets the size in bytes for a file or directory.
+In case of directory : itterates recursively through the directory structure and returns the accumulated file size in bytes.
+.Parameter LiteralPath
+A path to a file / directory. Interpreted as a literalpath.
+Accepts a single value or an array.
+.Example
+Get-Size $home\downloads
+309979761917
+.Example
+Get-Size $HOME\downloads, $HOME\Documents
+309979761917
+463858051
+.Inputs
+System.String[]
 .Link
 Convert-Size
+.Link
 Get-SizeConverted
 #>
 function Get-Size {
