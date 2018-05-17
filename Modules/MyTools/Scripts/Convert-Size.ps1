@@ -117,8 +117,11 @@ function Convert-Size {
 				return $size
             }
 
-            $sizeInNoPrefix = RemovePrefix $size $From
-            $sizeInToPrefix = ApplyPrefix $sizeInNoPrefix $To
+            $removeFromPrefixAction = GetRemovePrefixScriptBlock
+            $applyToPrefixAction = GetApplyPrefixScriptBlock
+            
+            $sizeInNoPrefix = ChangeSize $size $From $removeFromPrefixAction
+            $sizeInToPrefix = ChangeSize $sizeInNoPrefix $To $applyToPrefixAction
 
             $result = ConvertUnitType $sizeInToPrefix $From $To
             Write-Verbose "Non rounded result : $result"
@@ -129,32 +132,39 @@ function Convert-Size {
 	}
 }
 
-function RemovePrefix([double]$size, [string]$unit) {
+function ChangeSize([double]$size, [string]$unit, [ScriptBlock]$action) {
     if (HasPrefix $unit) {
         $prefix = GetPrefix $unit
         Write-Verbose "Unit : $unit has prefix : $prefix."
 
         $prefixConfig = GetPrefixConfig $prefix
-        return $size * [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
+        
+        # Call the action with 2 parameters using the call operator.
+        return &$action $size $prefixConfig
     }
 
     # Just b and B units have no prefix.
     Write-Verbose "Unit : $unit has no prefix."
+    
     return $size
 }
 
-function ApplyPrefix([double]$size, [string]$unit) {
-    if (HasPrefix $unit) {
-        $prefix = GetPrefix $unit
-        Write-Verbose "Unit : $unit has prefix : $prefix."
+function GetRemovePrefixScriptBlock() {
+    return { 
+        param([double]$size, $prefixConfig)
 
-        $prefixConfig = GetPrefixConfig $prefix
+        return $size * [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
+    }
+}
+
+function GetApplyPrefixScriptBlock() {
+    return { 
+        param([double]$size, $prefixConfig)
+
         return $size / [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
     }
-
-    Write-Verbose "Unit : $unit has no prefix."
-    return $size
 }
+
 
 function ConvertUnitType([double]$size, [string]$fromUnit, [string]$toUnit) {
     $fromUnitType = GetUnitType $fromUnit
