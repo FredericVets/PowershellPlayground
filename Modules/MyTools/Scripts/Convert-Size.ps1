@@ -1,24 +1,37 @@
 <#
 .Synopsis
-Converts a size from one specific unit to another unit. Supports decimal and binary unit types.
-.Description
-Decimal units :     Based on 10^3 (1000)
-                    A part of the International System of Units (SI), the modern metric system.
-                    e.g. KB for kilobyte
-Binary units :      Based on 2^10 (1024)
-                    Not a part of the SI.
-                    e.g. KiB for kibibyte
-
+Converts a size from one specific unit to another unit. Supports decimal and binary prefix types.
 Optionally you can specify the precision of the result.
+.Description
+The size of a file system object can be specified in a unit. E.g. 10 KiB (kibibyte).
+
+An actual unit is the combination of a prefix and a unit type.
+10 KiB  :   _ prefix = Ki (This is a binary prefix type.)
+            _ unit type = B (byte)
+
+There are 2 prefix types :  _ binary    :   E.g. Ki (kibi), Mi (mebi)
+                                            Based on 2^10 (1024).
+                                            A part of the IEC International Standard names and symbols for prefixes 
+                                            for binary multiples for use in the fields of data processing and data 
+                                            transmission.
+
+                            _ decimal   :   E.g. K (kilo), M (mega).
+                                            Based on 10^3 (1000).
+                                            A part of the International System of Units (SI), the modern metric system.
+There are 2 unit types  :   _ bit (b)
+                            _ byte (B)
+
+Windows displays decimal prefixes, but they actually should be binary prefixes.
+1 GB in Windows is actually 1 GiB.
 .Parameter Value
 The value(s) to be converted. Accepts a single value or an array.
 .Parameter From
 The source unit. This is the unit of the Value parameter.
-Supported values : 'b', 'bit', 'B', 'Byte', 'KB', 'KiB', 'MB', 'MiB', 'GB', 'GiB', 'TB', 'TiB', 'PB', 'PiB'
+Supported values : 'b', 'B', 'Kib', 'KiB', 'Mib', 'MiB', 'Gib', 'GiB', 'Tib', 'TiB', 'Pib', 'PiB', 'Eib', 'EiB', 'Zib', 'ZiB', 'Yib', 'YiB', 'Kb', 'KB', 'Mb', 'MB', 'Gb', 'GB', 'Tb', 'TB', 'Pb', 'PB', 'Eb', 'EB', 'Zb', 'ZB', 'Yb', 'YB'
 Case-sensitive.
 .Parameter To
 The target unit. This is the unit the result will be in.
-Supported values : 'b', 'bit', 'B', 'Byte', 'KB', 'KiB', 'MB', 'MiB', 'GB', 'GiB', 'TB', 'TiB', 'PB', 'PiB'
+Supported values : 'b', 'B', 'Kib', 'KiB', 'Mib', 'MiB', 'Gib', 'GiB', 'Tib', 'TiB', 'Pib', 'PiB', 'Eib', 'EiB', 'Zib', 'ZiB', 'Yib', 'YiB', 'Kb', 'KB', 'Mb', 'MB', 'Gb', 'GB', 'Tb', 'TB', 'Pb', 'PB', 'Eb', 'EB', 'Zb', 'ZB', 'Yb', 'YB'
 Case-sensitive.
 .Parameter Precision
 The number of decimals to include in the result.
@@ -32,6 +45,15 @@ Convert-Size -Value 1 -From GiB -To KiB
 .Example
 Convert-Size -Value 1 -From MiB -To MB -Precision 6
 1,048576
+.Example
+Convert-Size -Value 1 -From Kib -to B -Verbose
+VERBOSE: Converting 1 Kib to B.
+VERBOSE: Unit : Kib has prefix : Ki.
+VERBOSE: Unit : B has no prefix.
+VERBOSE: From bit to byte : / 8.
+VERBOSE: Non rounded result : 128
+VERBOSE: Rounding result to 4 decimals.
+128
 .Inputs
 System.Double[]
 .Notes
@@ -43,6 +65,8 @@ Factor      Name 	Symbol  Origin	                Derivation
 2^40	    tebi	Ti	    terabinary: (2^10)^4	tera: (10^3)^4
 2^50	    pebi	Pi	    petabinary: (2^10)^5	peta: (10^3)^5
 2^60	    exbi	Ei	    exabinary: (2^10)^6	    exa: (10^3)^6
+2^70	    zebi	Zi	    zettabinary: (2^10)^7   zetta: (10^3)^7
+2^80	    yobi	Yi	    yottabinary: (2^10)^8   yotta: (10^3)^8
  
 Examples and comparisons with SI prefixes
 one kibibit	    1 Kibit = 2^10 bit  = 1024 bit
@@ -56,6 +80,8 @@ Get-Size
 .Link
 Get-SizeConverted
 .Link
+http://members.optus.net/alexey/prefBin.xhtml
+.Link
 https://physics.nist.gov/cuu/Units/binary.html
 .Link
 https://en.wikipedia.org/wiki/Binary_prefix
@@ -67,82 +93,101 @@ function Convert-Size {
 		[Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
 		[double[]]
 		$Value,
-		[Parameter(Mandatory=$true)]
-		[ValidateSet('b', 'bit', 'B', 'Byte', 'KB', 'KiB', 'MB', 'MiB', 'GB', 'GiB', 'TB', 'TiB', 'PB', 'PiB', IgnoreCase=$false)]
+        [Parameter(Mandatory=$true)]
+        # TODO : make dynamic.
+		[ValidateSet('b', 'B', 'Kib', 'KiB', 'Mib', 'MiB', 'Gib', 'GiB', 'Tib', 'TiB', 'Pib', 'PiB', 'Eib', 'EiB', 'Zib', 'ZiB', 'Yib', 'YiB', 'Kb', 'KB', 'Mb', 'MB', 'Gb', 'GB', 'Tb', 'TB', 'Pb', 'PB', 'Eb', 'EB', 'Zb', 'ZB', 'Yb', 'YB', IgnoreCase=$false)]
 		[string]
 		$From,
-		[Parameter(Mandatory=$true)]
-		[ValidateSet('b', 'bit', 'B', 'Byte', 'KB', 'KiB', 'MB', 'MiB', 'GB', 'GiB', 'TB', 'TiB', 'PB', 'PiB', IgnoreCase=$false)]
+        [Parameter(Mandatory=$true)]
+        # TODO : make dynamic.
+        # [ValidateSet()]
+        # [ValidateScript({ $false })]
+        [ValidateSet('b', 'B', 'Kib', 'KiB', 'Mib', 'MiB', 'Gib', 'GiB', 'Tib', 'TiB', 'Pib', 'PiB', 'Eib', 'EiB', 'Zib', 'ZiB', 'Yib', 'YiB', 'Kb', 'KB', 'Mb', 'MB', 'Gb', 'GB', 'Tb', 'TB', 'Pb', 'PB', 'Eb', 'EB', 'Zb', 'ZB', 'Yb', 'YB', IgnoreCase=$false)]
 		[string]
 		$To,
 		[int]
 		$Precision = 4
     )
-    Begin {
-        New-Variable -Name BINARY_BASE -Value 1024 -Option Constant
-        New-Variable -Name DECIMAL_BASE -Value 1000 -Option Constant
-    }
 	Process {
 		foreach ($size in $Value) {
 			Write-Verbose "Converting $size $From to $To."
 
 			if ($From -ceq $To) {
+                Write-Verbose "From equals To, no conversion required."
 				return $size
-			}
-		
-			$bytes = ConvertToByte $size $From
-			$result = ConvertFromByte $bytes $To
-		
-			Write-Verbose "Non rounded result : $result"
-			[System.Math]::Round($result, $Precision)
+            }
+
+            $sizeInNoPrefix = RemovePrefix $size $From
+            $sizeInToPrefix = ApplyPrefix $sizeInNoPrefix $To
+
+            $result = ConvertUnitType $sizeInToPrefix $From $To
+            Write-Verbose "Non rounded result : $result"
+            Write-Verbose "Rounding result to $Precision decimals."
+            
+            return [System.Math]::Round($result, $Precision)
 		}
 	}
 }
 
-function ConvertToByte([double]$size, [string]$sourceUnit) {
-    switch -CaseSensitive ($sourceUnit) {
-        'b' { $size / 8 }
-        'bit' { $size / 8 }
-        'B' { $size }
-        'Byte' { $size }
-        'KB' { $size * $DECIMAL_BASE }
-        'MB' { $size * $DECIMAL_BASE * $DECIMAL_BASE }
-        'GB' { $size * $DECIMAL_BASE * $DECIMAL_BASE * $DECIMAL_BASE }
-        'TB' { $size * $DECIMAL_BASE * $DECIMAL_BASE * $DECIMAL_BASE * $DECIMAL_BASE }
-        'PB' { $size * $DECIMAL_BASE * $DECIMAL_BASE * $DECIMAL_BASE * $DECIMAL_BASE * $DECIMAL_BASE }
-        'KiB' { $size * $BINARY_BASE }
-        'MiB' { $size * $BINARY_BASE * $BINARY_BASE }
-        'GiB' { $size * $BINARY_BASE * $BINARY_BASE * $BINARY_BASE }
-        'TiB' { $size * $BINARY_BASE * $BINARY_BASE * $BINARY_BASE * $BINARY_BASE }
-        'PiB' { $size * $BINARY_BASE * $BINARY_BASE * $BINARY_BASE * $BINARY_BASE * $BINARY_BASE }
-        Default 
-        { 
-            # Script terminating error
-            throw [System.ArgumentException]::new("Unsupported format: $From") 
-        }
+function RemovePrefix([double]$size, [string]$unit) {
+    if (HasPrefix $unit) {
+        $prefix = GetPrefix $unit
+        Write-Verbose "Unit : $unit has prefix : $prefix."
+
+        $prefixConfig = GetPrefixConfig $prefix
+        return $size * [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
     }
+
+    # Just b and B units have no prefix.
+    Write-Verbose "Unit : $unit has no prefix."
+    return $size
 }
 
-function ConvertFromByte([double]$bytes, [string]$targetUnit) {
-    switch -CaseSensitive ($targetUnit) {
-        'b' { $bytes * 8 }
-        'bit' { $bytes * 8 }
-        'B' { $bytes }
-        'Byte' { $bytes }
-        'KB' { $bytes / $DECIMAL_BASE }
-        'MB' { $bytes / $DECIMAL_BASE / $DECIMAL_BASE }
-        'GB' { $bytes / $DECIMAL_BASE / $DECIMAL_BASE / $DECIMAL_BASE }
-        'TB' { $bytes / $DECIMAL_BASE / $DECIMAL_BASE / $DECIMAL_BASE / $DECIMAL_BASE }
-        'PB' { $bytes / $DECIMAL_BASE / $DECIMAL_BASE / $DECIMAL_BASE / $DECIMAL_BASE / $DECIMAL_BASE }
-        'KiB' { $bytes / $BINARY_BASE }
-        'MiB' { $bytes / $BINARY_BASE / $BINARY_BASE }
-        'GiB' { $bytes / $BINARY_BASE / $BINARY_BASE / $BINARY_BASE }
-        'TiB' { $bytes / $BINARY_BASE / $BINARY_BASE / $BINARY_BASE / $BINARY_BASE }
-        'PiB' { $bytes / $BINARY_BASE / $BINARY_BASE / $BINARY_BASE / $BINARY_BASE / $BINARY_BASE }
-        Default 
-        { 
-            # Statement terminating error.
-            throw [System.ArgumentException]::new("Unsupported format: $To") 
-        }
+function ApplyPrefix([double]$size, [string]$unit) {
+    if (HasPrefix $unit) {
+        $prefix = GetPrefix $unit
+        Write-Verbose "Unit : $unit has prefix : $prefix."
+
+        $prefixConfig = GetPrefixConfig $prefix
+        return $size / [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
     }
+
+    Write-Verbose "Unit : $unit has no prefix."
+    return $size
+}
+
+function ConvertUnitType([double]$size, [string]$fromUnit, [string]$toUnit) {
+    $fromUnitType = GetUnitType $fromUnit
+    $toUnitType = GetUnitType $toUnit
+
+    if ($fromUnitType -ceq $toUnitType) {
+        Write-Verbose "Same unit type : $fromUnitType"
+
+        return $size
+    }
+    if ($fromUnitType -ceq 'b') {
+        Write-Verbose 'From bit to byte : / 8.'
+
+        return $size / 8
+    }
+
+    Write-Verbose 'From byte to bit : * 8.'
+
+    return $size * 8
+}
+
+function HasPrefix([string]$unit) {
+    return $unit.Length -ne 1
+}
+
+function GetPrefix([string]$unit) {
+    if (-not (HasPrefix $unit)) {
+        throw [System.ArgumentException]::new("Unit : $unit has no prefix.")
+    }
+
+    return $unit.Remove($unit.Length - 1)
+}
+
+function GetUnitType([string]$unit) {
+    return $unit[-1]
 }
