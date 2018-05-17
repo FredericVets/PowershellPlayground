@@ -7,6 +7,7 @@ function GetPrefixConfig([string]$prefix) {
     return $config
 }
 
+# TODO : replace with filter.
 function GetAllPrefixConfigsForType([string]$prefixType) {
     $configs = @()
     if ($prefixType -cin $PREFIX_TYPE_BINARY, $PREFIX_TYPE_BOTH) {
@@ -35,4 +36,19 @@ function GetAllUnitsAsString() {
     $allUnits = GetAllUnitsForPrefixType 'Both'
     
     return [System.String]::Join(", ", $allUnits)
+}
+
+function ValidateUnit {
+    Param(
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $Unit
+    )
+
+    $allUnits = GetAllUnitsForPrefixType $PREFIX_TYPE_BOTH
+    if ($allUnits -ccontains $Unit) {
+        return $true
+    }
+
+    throw [System.ArgumentException]::new("$Unit is not in the list of valid units : $allUnits.")
 }

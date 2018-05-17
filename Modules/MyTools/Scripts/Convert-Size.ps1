@@ -21,6 +21,8 @@ There are 2 prefix types :  _ binary    :   E.g. Ki (kibi), Mi (mebi)
 There are 2 unit types  :   _ bit (b)
                             _ byte (B)
 
+See The description for the From and To parameters to see a list of all supported units.
+
 Windows displays decimal prefixes, but they actually should be binary prefixes.
 1 GB in Windows is actually 1 GiB.
 .Parameter Value
@@ -90,19 +92,20 @@ function Convert-Size {
 	[CmdletBinding()]
 	[OutputType([double])]
 	Param(
-		[Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
+        [ValidateNotNull()]
 		[double[]]
 		$Value,
         [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
         # TODO : make dynamic.
-		[ValidateSet('b', 'B', 'Kib', 'KiB', 'Mib', 'MiB', 'Gib', 'GiB', 'Tib', 'TiB', 'Pib', 'PiB', 'Eib', 'EiB', 'Zib', 'ZiB', 'Yib', 'YiB', 'Kb', 'KB', 'Mb', 'MB', 'Gb', 'GB', 'Tb', 'TB', 'Pb', 'PB', 'Eb', 'EB', 'Zb', 'ZB', 'Yb', 'YB', IgnoreCase=$false)]
+        [ValidateScript({ ValidateUnit $_ })]
 		[string]
 		$From,
         [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
         # TODO : make dynamic.
-        # [ValidateSet()]
-        # [ValidateScript({ $false })]
-        [ValidateSet('b', 'B', 'Kib', 'KiB', 'Mib', 'MiB', 'Gib', 'GiB', 'Tib', 'TiB', 'Pib', 'PiB', 'Eib', 'EiB', 'Zib', 'ZiB', 'Yib', 'YiB', 'Kb', 'KB', 'Mb', 'MB', 'Gb', 'GB', 'Tb', 'TB', 'Pb', 'PB', 'Eb', 'EB', 'Zb', 'ZB', 'Yb', 'YB', IgnoreCase=$false)]
+        [ValidateScript({ ValidateUnit $_ })]
 		[string]
 		$To,
 		[int]
@@ -132,6 +135,28 @@ function Convert-Size {
 	}
 }
 
+<#  This will remove the prefix by multiplying the value the prefix represents with the size.
+    E.g. 100 KiB -> 102400 B
+#>
+function GetRemovePrefixScriptBlock() {
+    return { 
+        param([double]$size, $prefixConfig)
+
+        return $size * [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
+    }
+}
+
+<#  This will apply the value the prefix represents by dividing the size with it.
+    E.g. 102400 B -> 100 KiB
+#>
+function GetApplyPrefixScriptBlock() {
+    return { 
+        param([double]$size, $prefixConfig)
+
+        return $size / [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
+    }
+}
+
 function ChangeSize([double]$size, [string]$unit, [ScriptBlock]$action) {
     if (HasPrefix $unit) {
         $prefix = GetPrefix $unit
@@ -148,23 +173,6 @@ function ChangeSize([double]$size, [string]$unit, [ScriptBlock]$action) {
     
     return $size
 }
-
-function GetRemovePrefixScriptBlock() {
-    return { 
-        param([double]$size, $prefixConfig)
-
-        return $size * [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
-    }
-}
-
-function GetApplyPrefixScriptBlock() {
-    return { 
-        param([double]$size, $prefixConfig)
-
-        return $size / [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
-    }
-}
-
 
 function ConvertUnitType([double]$size, [string]$fromUnit, [string]$toUnit) {
     $fromUnitType = GetUnitType $fromUnit
