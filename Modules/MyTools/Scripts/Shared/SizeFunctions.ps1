@@ -1,5 +1,5 @@
 function GetPrefixConfig([string]$prefix) {
-    $config = $PREFIXES_CONFIG | where Name -ceq $prefix
+    $config = $PREFIXES_CONFIG | Where-Object Name -ceq $prefix
     if ($config -eq $null) {
         throw [System.ArgumentException]::new("Invalid prefix : $prefix")
     }
@@ -7,21 +7,21 @@ function GetPrefixConfig([string]$prefix) {
     return $config
 }
 
-# TODO : replace with filter.
-function GetAllPrefixConfigsForType([string]$prefixType) {
-    $configs = @()
-    if ($prefixType -cin $PREFIX_TYPE_BINARY, $PREFIX_TYPE_BOTH) {
-        $configs = $PREFIXES_CONFIG | where Base -eq $BINARY_BASE
+filter PrefixConfigForTypeFilter([string]$prefixType) {
+    # Case insensitive comparison.
+    if ($prefixType -eq $PREFIX_TYPE_BINARY -and $_.Base -eq $BINARY_BASE) {
+        return $_
     }
-    if ($prefixType -cin $PREFIX_TYPE_DECIMAL, $PREFIX_TYPE_BOTH) {
-        $configs += $PREFIXES_CONFIG | where Base -eq $DECIMAL_BASE
+    if ($prefixType -eq $PREFIX_TYPE_DECIMAL -and $_.Base -eq $DECIMAL_BASE) {
+        return $_
     }
 
-    return $configs
+    return $_
 }
 
 function GetAllUnitsForPrefixType([string]$prefixType) {
-    GetAllPrefixConfigsForType $prefixType |
+    $PREFIXES_CONFIG |
+    PrefixConfigForTypeFilter $prefixType |
     ForEach-Object -Begin {
         # Include single bit and single byte.
         'b'
@@ -40,6 +40,7 @@ function GetAllUnitsAsString() {
 
 function ValidateUnit {
     Param(
+        [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $Unit
@@ -51,4 +52,19 @@ function ValidateUnit {
     }
 
     throw [System.ArgumentException]::new("$Unit is not in the list of valid units : $allUnits.")
+}
+
+function ValidatePrefixType {
+    Param(
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $PrefixType
+    )
+    $allPrefixtypes = $PREFIX_TYPE_BINARY, $PREFIX_TYPE_DECIMAL, $PREFIX_TYPE_BOTH
+    if ($allPrefixtypes -contains $PrefixType) {
+        return $true
+    }
+
+    throw [System.ArgumentException]::new("$PrefixType is not in the list of valid prefix types : $allPrefixtypes.")
 }

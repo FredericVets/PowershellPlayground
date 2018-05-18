@@ -6,18 +6,19 @@ Optionally you can specify the precision of the result.
 The size of a file system object can be specified in a unit. E.g. 10 KiB (kibibyte).
 
 An actual unit is the combination of a prefix and a unit type.
-10 KiB  :   _ prefix = Ki (This is a binary prefix type.)
-            _ unit type = B (byte)
+
+E.g. 10 KiB :   _ prefix = Ki (This is a binary prefix type.)
+                _ unit type = B (byte)
 
 There are 2 prefix types :  _ binary    :   E.g. Ki (kibi), Mi (mebi)
                                             Based on 2^10 (1024).
-                                            A part of the IEC International Standard names and symbols for prefixes 
+                                            (A part of the IEC International Standard names and symbols for prefixes 
                                             for binary multiples for use in the fields of data processing and data 
-                                            transmission.
+                                            transmission.)
 
                             _ decimal   :   E.g. K (kilo), M (mega).
                                             Based on 10^3 (1000).
-                                            A part of the International System of Units (SI), the modern metric system.
+                                            (A part of the International System of Units (SI), the modern metric system.)
 There are 2 unit types  :   _ bit (b)
                             _ byte (B)
 
@@ -107,7 +108,8 @@ function Convert-Size {
         # TODO : make dynamic.
         [ValidateScript({ ValidateUnit $_ })]
 		[string]
-		$To,
+        $To,
+        [ValidateScript({ $_ -ge 1 })]
 		[int]
 		$Precision = 4
     )
@@ -120,13 +122,13 @@ function Convert-Size {
 				return $size
             }
 
-            $removeFromPrefixAction = GetRemovePrefixScriptBlock
-            $applyToPrefixAction = GetApplyPrefixScriptBlock
+            $expandSizeAction = ExpandSizeForPrefixScriptBlock
+            $reduceSizeAction = ReduceSizeForPrefixScriptBlock
             
-            $sizeInNoPrefix = ChangeSize $size $From $removeFromPrefixAction
-            $sizeInToPrefix = ChangeSize $sizeInNoPrefix $To $applyToPrefixAction
+            $expandedSize = ChangeSize $size $From $expandSizeAction
+            $reducedSize = ChangeSize $expandedSize $To $reduceSizeAction
 
-            $result = ConvertUnitType $sizeInToPrefix $From $To
+            $result = ConvertUnitType $reducedSize $From $To
             Write-Verbose "Non rounded result : $result"
             Write-Verbose "Rounding result to $Precision decimals."
             
@@ -135,10 +137,10 @@ function Convert-Size {
 	}
 }
 
-<#  This will remove the prefix by multiplying the value the prefix represents with the size.
+<#  This will expand the size by multiplying the size with the value the prefix represents.
     E.g. 100 KiB -> 102400 B
 #>
-function GetRemovePrefixScriptBlock() {
+function ExpandSizeForPrefixScriptBlock() {
     return { 
         param([double]$size, $prefixConfig)
 
@@ -146,10 +148,10 @@ function GetRemovePrefixScriptBlock() {
     }
 }
 
-<#  This will apply the value the prefix represents by dividing the size with it.
+<#  This will reduce the size by dividing the size with the value the prefix represents.
     E.g. 102400 B -> 100 KiB
 #>
-function GetApplyPrefixScriptBlock() {
+function ReduceSizeForPrefixScriptBlock() {
     return { 
         param([double]$size, $prefixConfig)
 
@@ -161,7 +163,6 @@ function ChangeSize([double]$size, [string]$unit, [ScriptBlock]$action) {
     if (HasPrefix $unit) {
         $prefix = GetPrefix $unit
         Write-Verbose "Unit : $unit has prefix : $prefix."
-
         $prefixConfig = GetPrefixConfig $prefix
         
         # Call the action with 2 parameters using the call operator.
