@@ -3,18 +3,22 @@
 Gets the size for a file or directory. Displays the resulting size in different units.
 .Description
 Gets the size for a file or directory.
-In case of directory : itterates recursively through the directory structure and returns the accumulated file size.
+In case of directory : itterates recursively through the directory structure and returns the accumulated file sizes.
 
-The resulting size can be returned in different unit types : Binary units, Decimal units or both.
-By default all different size units are returned.
-You can specify to return only the relevant units.
+The resulting size can be returned in units with different prefix types : binary, decimal or both.
+By default both the prefix types are returned.
+You can specify to return only the relevant units (ShowOnlyMeaningful switch).
+
+All units have the unit type byte.
+
+For more info see the Get-Help Convert-Size page.
 .Parameter LiteralPath
 A path to a file / directory. Interpreted as a literalpath.
 Accepts a single value or an array.
 .Parameter ShowOnlyMeaningful
 Show only the sizes that hold meaning.
-.Parameter UnitType
-Specifies the unit type the sizes will be in. Possible values : 'Both', 'Binary', 'Decimal'.
+.Parameter PrefixType
+Specifies the prefix type the sizes will be in. Possible values : 'Both', 'Binary', 'Decimal'.
 Defaults to Both.
 .Parameter Precision
 The number of decimals to include in the results.
@@ -53,13 +57,13 @@ GiB         GB          LiteralPath
 ---         --          -----------
 288,6911    309,9798    C:\Users\Frederic\Downloads
 .Example
-Get-SizeConverted $HOME\Downloads -ShowOnlyMeaningful -UnitType Binary
+Get-SizeConverted $HOME\Downloads -ShowOnlyMeaningful -PrefixType Binary
 
 GiB         LiteralPath
 ---         -----------
 288,6911    C:\Users\Frederic\Downloads
 .Example
-Get-SizeConverted $HOME\Downloads -ShowOnlyMeaningful -UnitType Decimal -Precision 6
+Get-SizeConverted $HOME\Downloads -ShowOnlyMeaningful -PrefixType Decimal -Precision 6
 
 GB          LiteralPath
 --          -----------
@@ -84,42 +88,37 @@ function Get-SizeConverted {
 		$ShowOnlyMeaningful,
 		[ValidateSet('Both', 'Binary', 'Decimal')]
 		[string]
-        $UnitType = 'Both',
+        $PrefixType = 'Both',
         [int]
 		$Precision = 4
     )
-    Begin {
-        <#  These constants are created in the local scope. 
-            When a function is executed from within this scope, a new child scope is created. Inside of this new 
-            scope, these constants are visible from it's parent or ancestor scopes.
-        #>
-        New-Variable -Name BINARY_UNITS -Value 'KiB', 'MiB', 'GiB', 'TiB', 'PiB' -Option Constant
-        New-Variable -Name DECIMAL_UNITS -Value 'KB', 'MB', 'GB', 'TB', 'PB' -Option Constant
-        New-Variable -Name BINARY_BASE -Value 1024 -Option Constant
-        New-Variable -Name DECIMAL_BASE -Value 1000 -Option Constant
-    }
-	Process {       
+   	Process {       
         foreach ($path in $LiteralPath) {
 			[long]$sizeInByte = Get-Size -LiteralPath $path
-			$sizes = ConvertToSizesForUnitType $UnitType $sizeInByte $Precision $ShowOnlyMeaningful
+			$sizes = ConvertToSizesForPrefixType $PrefixType $sizeInByte $Precision $ShowOnlyMeaningful
             
             CreateResultObject $path $sizes
 		}
 	}
 }
 
-function ConvertToSizesForUnitType([string]$unitType, [long]$sizeInByte, [int]$precision, [bool]$onlyMeaningful) {
-    $sizes = CreateSizesHashTable $onlyMeaningful $sizeInByte
-    $units = GetUnitsFor $unitType
+function ConvertToSizesForPrefixType([string]$prefixType, [long]$sizeInByte, [int]$precision, [bool]$onlyMeaningful) {
+    # By default Powershell hashtables @{} are case insensitive.
+    # To get a case sensitive hashtable : explicitly use New-Object -TypeName System.Collections.Hashtable and use the 
+    # index or dot notation.
+    $sizes = [Ordered]@{}
+
+    # Only use unit type byte.
+    $units = GetAllUnits $prefixType $UNIT_TYPE_BYTE.Name
     foreach ($unit in $units) {
-        $converted = Convert-Size -Value $sizeInByte -From Byte -To $unit -Precision $precision
+        $converted = Convert-Size -Value $sizeInByte -From byte -To $unit -Precision $precision
         if (-not $onlyMeaningful) {
-            $sizes.Add($unit, $converted)
+            $sizes[$unit] = $converted
 
             continue
         }
         if (IsMeaningfulForUnit $unit $converted) { 
-            $sizes.Add($unit, $converted) 
+            $sizes[$unit] = $converted
         }
     }
 
@@ -136,35 +135,16 @@ function CreateResultObject([string]$literalPath, $sizes) {
 	return $obj
 }
 
-function CreateSizesHashTable([bool]$onlyMeaningful, [long]$sizeInByte) {
-    if ($onlyMeaningful) {
-        return [Ordered]@{ }
-    }
-
-    return [Ordered]@{
-        'Bit' = Convert-Size -From Byte -To bit -Value $sizeInByte
-        'Byte' = $sizeInByte
-    }
-}
-
-function GetUnitsFor([string]$unitType) {
-    if ($unitType -eq 'Binary') {
-        return $BINARY_UNITS
-    }
-    if ($unitType -eq 'Decimal') {
-        return $DECIMAL_UNITS
-    }
-    if ($unitType -eq 'Both') {
-        return $BINARY_UNITS + $DECIMAL_UNITS
-    }
-}
-
 function IsMeaningfulForUnit([string]$unit, [double]$size) {
-    if ($BINARY_UNITS -contains $unit) {
-        return ($size -ge 1) -and ($size -lt $BINARY_BASE)
+    if (-not (HasPrefix $unit)) {
+        # case for b and B, compare as decimal prefix type.
+        return IsMeaningfulForDecimalUnit $size
     }
-    if ($DECIMAL_UNITS -contains $unit) {
-        return ($size -ge 1) -and ($size -lt $DECIMAL_BASE)
+    if (HasBinaryPrefix $unit) {
+        return IsMeaningfulForBinaryUnit $size
+    }
+    if (HasDecimalPrefix $unit) {
+        return IsMeaningfulForDecimalUnit $size
     }
 
     throw [System.ArgumentException]::new("Unknown unit: $unit")

@@ -27,4 +27,8 @@ New-Variable -Name PREFIXES_CONFIG -Option ReadOnly -Value @(
     (New-Object -TypeName PSObject -Property @{ Name = 'Y'; Base = $DECIMAL_BASE; Exponent = 8 } )
 )
 
-# Remove-Variable -Name BINARY_BASE, DECIMAL_BASE, PREFIXES_CONFIG
+New-Variable -Name UNIT_TYPE_BIT -Option ReadOnly -Value @{ Name = 'bit'; Symbol = 'b' }
+New-Variable -Name UNIT_TYPE_BYTE -Option ReadOnly -Value @{ Name = 'byte'; Symbol = 'B' }
+New-Variable -Name UNIT_TYPE_BOTH -Value 'Both' -Option ReadOnly
+
+# Remove-Variable -Force -Name BINARY_BASE, DECIMAL_BASE, PREFIX_TYPE_BINARY, PREFIX_TYPE_DECIMAL, PREFIX_TYPE_BOTH, PREFIXES_CONFIG, UNIT_TYPE_BIT, UNIT_TYPE_BYTE, UNIT_TYPE_BOTH
