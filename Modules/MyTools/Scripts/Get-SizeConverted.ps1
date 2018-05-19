@@ -27,48 +27,55 @@ Defaults to 4.
 .Example
 Get-SizeConverted $HOME\Downloads
 
-Bit         : 2479838095336
-Byte        : 309979761917
-KiB         : 302714611,2471
-MiB         : 295619,7375
-GiB         : 288,6911
-TiB         : 0,2819
-PiB         : 0,0003
-KB          : 309979761,917
-MB          : 309979,7619
-GB          : 309,9798
-TB          : 0,31
-PB          : 0,0003
+byte        : 153996151031
+KiB         : 150386866,2412
+MiB         : 146862,1741
+GiB         : 143,4201
+TiB         : 0,1401
+PiB         : 0,0001
+EiB         : 0
+ZiB         : 0
+YiB         : 0
+KB          : 153996151,031
+MB          : 153996,151
+GB          : 153,9962
+TB          : 0,154
+PB          : 0,0002
+EB          : 0
+ZB          : 0
+YB          : 0
 LiteralPath : C:\Users\Frederic\Downloads
 .Example
-Get-SizeConverted $HOME\Downloads -UnitType Decimal
+Get-SizeConverted $HOME\Downloads -PrefixType Decimal
 
-Bit         : 2479838095336
-Byte        : 309979761917
-KB          : 309979761,917
-MB          : 309979,7619
-GB          : 309,9798
-TB          : 0,31
-PB          : 0,0003
+byte        : 153996151031
+KB          : 153996151,031
+MB          : 153996,151
+GB          : 153,9962
+TB          : 0,154
+PB          : 0,0002
+EB          : 0
+ZB          : 0
+YB          : 0
 LiteralPath : C:\Users\Frederic\Downloads
 .Example
 Get-SizeConverted $HOME\Downloads -ShowOnlyMeaningful
 
 GiB         GB          LiteralPath
 ---         --          -----------
-288,6911    309,9798    C:\Users\Frederic\Downloads
+143,4201    153,9962    C:\Users\Frederic\Downloads
 .Example
 Get-SizeConverted $HOME\Downloads -ShowOnlyMeaningful -PrefixType Binary
 
 GiB         LiteralPath
 ---         -----------
-288,6911    C:\Users\Frederic\Downloads
+143,4201    C:\Users\Frederic\Downloads
 .Example
 Get-SizeConverted $HOME\Downloads -ShowOnlyMeaningful -PrefixType Decimal -Precision 6
 
 GB          LiteralPath
 --          -----------
-309,979762  C:\Users\Frederic\Downloads
+153,996151  C:\Users\Frederic\Downloads
 .Inputs
 System.String[]
 .Link

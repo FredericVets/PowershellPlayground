@@ -70,15 +70,15 @@ RequiredAssemblies = @('System.Windows.Forms')
 # Order in which to import is important (e.g. Prefix.ps1 references constants defined in Unit.ps1)
 NestedModules = @(
     'aliases.ps1',
-    '.\Scripts\Shared\Size\Unit.ps1',
-    '.\Scripts\Shared\Size\UnitType.ps1',
-    '.\Scripts\Shared\Size\Prefix.ps1',
-    '.\Scripts\Shared\Size\PrefixType.ps1',
-    '.\Scripts\Convert-Size.ps1',
-    '.\Scripts\Get-Size.ps1',
-    '.\Scripts\Get-SizeConverted.ps1',
-    '.\Scripts\Update-File.ps1',
-    '.\Scripts\Set-PowerState.ps1'
+    'Scripts\Shared\Size\Unit.ps1',
+    'Scripts\Shared\Size\UnitType.ps1',
+    'Scripts\Shared\Size\Prefix.ps1',
+    'Scripts\Shared\Size\PrefixType.ps1',
+    'Scripts\Convert-Size.ps1',
+    'Scripts\Get-Size.ps1',
+    'Scripts\Get-SizeConverted.ps1',
+    'Scripts\Update-File.ps1',
+    'Scripts\Set-PowerState.ps1'
 )
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -101,7 +101,7 @@ VariablesToExport = ''
 
 
 # Aliases to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no aliases to export.
-AliasesToExport = @()
+AliasesToExport = @('gsc')
 
 # DSC resources to export from this module
 # DscResourcesToExport = @()

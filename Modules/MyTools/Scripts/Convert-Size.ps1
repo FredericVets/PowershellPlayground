@@ -61,23 +61,23 @@ VERBOSE: Rounding result to 4 decimals.
 System.Double[]
 .Notes
 Prefixes for binary multiples
-Factor      Name 	Symbol  Origin	                Derivation 
-2^10	    kibi	Ki	    kilobinary: (2^10)^1	kilo: (10^3)^1
-2^20	    mebi	Mi	    megabinary: (2^10)^2 	mega: (10^3)^2
-2^30	    gibi	Gi	    gigabinary: (2^10)^3	giga: (10^3)^3
-2^40	    tebi	Ti	    terabinary: (2^10)^4	tera: (10^3)^4
-2^50	    pebi	Pi	    petabinary: (2^10)^5	peta: (10^3)^5
-2^60	    exbi	Ei	    exabinary: (2^10)^6	    exa: (10^3)^6
-2^70	    zebi	Zi	    zettabinary: (2^10)^7   zetta: (10^3)^7
-2^80	    yobi	Yi	    yottabinary: (2^10)^8   yotta: (10^3)^8
+Factor      Name 	Symbol  Origin                          Derivation 
+2^10        kibi	Ki	    kilobinary:     (2^10)^1        kilo: (10^3)^1
+2^20        mebi	Mi	    megabinary:     (2^10)^2        mega: (10^3)^2
+2^30        gibi	Gi	    gigabinary:     (2^10)^3        giga: (10^3)^3
+2^40	    tebi	Ti	    terabinary:     (2^10)^4        tera: (10^3)^4
+2^50	    pebi	Pi	    petabinary:     (2^10)^5        peta: (10^3)^5
+2^60	    exbi	Ei	    exabinary:      (2^10)^6         exa: (10^3)^6
+2^70	    zebi	Zi	    zettabinary:    (2^10)^7       zetta: (10^3)^7
+2^80	    yobi	Yi	    yottabinary:    (2^10)^8       yotta: (10^3)^8
  
 Examples and comparisons with SI prefixes
-one kibibit	    1 Kibit = 2^10 bit  = 1024 bit
-one kilobit	    1 kbit  = 10^3 bit  = 1000 bit
-one mebibyte	1 MiB   = 2^20 B    = 1 048 576 B
-one megabyte	1 MB    = 10^6 B    = 1 000 000 B
-one gibibyte	1 GiB   = 2^30 B    = 1 073 741 824 B
-one gigabyte	1 GB    = 10^9 B    = 1 000 000 000 B
+one kibibit     1 Kibit = 2^10 bit  = 1024 bit
+one kilobit     1 kbit  = 10^3 bit  = 1000 bit
+one mebibyte    1 MiB   = 2^20 B    = 1 048 576 B
+one megabyte    1 MB    = 10^6 B    = 1 000 000 B
+one gibibyte    1 GiB   = 2^30 B    = 1 073 741 824 B
+one gigabyte    1 GB    = 10^9 B    = 1 000 000 000 B
 .Link
 Get-Size
 .Link
