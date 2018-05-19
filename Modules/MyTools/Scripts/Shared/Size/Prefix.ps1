@@ -1,10 +1,3 @@
-New-Variable -Name BINARY_BASE -Value 1024 -Option ReadOnly
-New-Variable -Name DECIMAL_BASE -Value 1000 -Option ReadOnly
-
-New-Variable -Name PREFIX_TYPE_BINARY -Value 'Binary' -Option ReadOnly
-New-Variable -Name PREFIX_TYPE_DECIMAL -Value 'Decimal' -Option ReadOnly
-New-Variable -Name PREFIX_TYPE_BOTH -Value 'Both' -Option ReadOnly
-
 New-Variable -Name PREFIXES_CONFIG -Option ReadOnly -Value @(
     # Wrapped in PSObject instances, otherwise '| select Name' doesn't work.
     # Binary prefixes.
@@ -27,8 +20,61 @@ New-Variable -Name PREFIXES_CONFIG -Option ReadOnly -Value @(
     (New-Object -TypeName PSObject -Property @{ Name = 'Y'; Base = $DECIMAL_BASE; Exponent = 8 } )
 )
 
-New-Variable -Name UNIT_TYPE_BIT -Option ReadOnly -Value @{ Name = 'bit'; Symbol = 'b' }
-New-Variable -Name UNIT_TYPE_BYTE -Option ReadOnly -Value @{ Name = 'byte'; Symbol = 'B' }
-New-Variable -Name UNIT_TYPE_BOTH -Value 'Both' -Option ReadOnly
+function GetPrefixConfig([string]$prefix) {
+    $config = $PREFIXES_CONFIG | Where-Object Name -ceq $prefix
+    if ($config -eq $null) {
+        throw [System.ArgumentException]::new("Invalid prefix : $prefix")
+    }
 
-# Remove-Variable -Force -Name BINARY_BASE, DECIMAL_BASE, PREFIX_TYPE_BINARY, PREFIX_TYPE_DECIMAL, PREFIX_TYPE_BOTH, PREFIXES_CONFIG, UNIT_TYPE_BIT, UNIT_TYPE_BYTE, UNIT_TYPE_BOTH
+    return $config
+}
+
+function IsBinaryPrefixConfig([PSObject]$prefixConfig) {
+    return $prefixConfig.Base -eq $BINARY_BASE
+}
+
+function IsDecimalPrefixConfig([PSObject]$prefixConfig) {
+    return $prefixConfig.Base -eq $DECIMAL_BASE
+}
+
+function GetPrefix([string]$unit) {
+    if (-not (HasPrefix $unit)) {
+        throw [System.ArgumentException]::new("Unit : $unit has no prefix.")
+    }
+
+    return $unit.Remove($unit.Length - 1)
+}
+
+function HasPrefix([string]$unit) {
+    # In the commented example below, a return in the For-Each object doesn't terminate the function, just the current 
+    # For-Each script block ...
+    # Makes sense since you're plugged into the pipeline.
+    #
+    # $PREFIXES_CONFIG |
+    # ForEach-Object {
+    #     if ($unit -clike "$($_.Name)*") {
+    #         return $true
+    #     }
+    # }
+    foreach ($prefix in $PREFIXES_CONFIG) {
+        if ($unit -clike "$($prefix.Name)*") {
+            return $true
+        }
+    }
+
+    return $false
+}
+
+function HasBinaryPrefix([string]$unit) {
+    $prefix = GetPrefix $unit
+    $prefixConfig = GetPrefixConfig $prefix
+
+    return IsBinaryPrefixConfig $prefixConfig
+}
+
+function HasDecimalPrefix([string]$unit) {
+    $prefix = GetPrefix $unit
+    $prefixConfig = GetPrefixConfig $prefix
+
+    return IsDecimalPrefixConfig $prefixConfig
+}

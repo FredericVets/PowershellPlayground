@@ -67,10 +67,13 @@ RequiredAssemblies = @('System.Windows.Forms')
 # FormatsToProcess = @()
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
+# Order in which to import is important (e.g. Prefix.ps1 references constants defined in Unit.ps1)
 NestedModules = @(
     'aliases.ps1',
-    '.\Shared\Constants.ps1',
-    '.\Shared\SizeFunctions.ps1',
+    '.\Scripts\Shared\Size\Unit.ps1',
+    '.\Scripts\Shared\Size\UnitType.ps1',
+    '.\Scripts\Shared\Size\Prefix.ps1',
+    '.\Scripts\Shared\Size\PrefixType.ps1',
     '.\Scripts\Convert-Size.ps1',
     '.\Scripts\Get-Size.ps1',
     '.\Scripts\Get-SizeConverted.ps1',

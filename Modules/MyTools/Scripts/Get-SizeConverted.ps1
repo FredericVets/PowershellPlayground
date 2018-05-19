@@ -17,6 +17,7 @@ A path to a file / directory. Interpreted as a literalpath.
 Accepts a single value or an array.
 .Parameter ShowOnlyMeaningful
 Show only the sizes that hold meaning.
+E.g. Instead of displaying 1025 KiB, 1,001 Mib will be shown.
 .Parameter PrefixType
 Specifies the prefix type the sizes will be in. Possible values : 'Both', 'Binary', 'Decimal'.
 Defaults to Both.
@@ -78,14 +79,16 @@ Convert-Size
 function Get-SizeConverted {
     [CmdletBinding()]
 	Param(
-		[Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
+        [ValidateNotNullOrEmpty()]
 		[ValidateScript({ Test-Path -LiteralPath $_ })]
 		[Alias('Path')]
 		[string[]]
 		$LiteralPath,
         [Alias('Human', 'HumanReadable')]
         [switch]
-		$ShowOnlyMeaningful,
+        $ShowOnlyMeaningful,
+        # hard-coded, no ValidateScript since these values are a simple set and I want to keep tab- completion enabled.
 		[ValidateSet('Both', 'Binary', 'Decimal')]
 		[string]
         $PrefixType = 'Both',
@@ -133,19 +136,4 @@ function CreateResultObject([string]$literalPath, $sizes) {
 	$obj | Add-Member -MemberType NoteProperty -Name "LiteralPath" -Value $literalPath
 
 	return $obj
-}
-
-function IsMeaningfulForUnit([string]$unit, [double]$size) {
-    if (-not (HasPrefix $unit)) {
-        # case for b and B, compare as decimal prefix type.
-        return IsMeaningfulForDecimalUnit $size
-    }
-    if (HasBinaryPrefix $unit) {
-        return IsMeaningfulForBinaryUnit $size
-    }
-    if (HasDecimalPrefix $unit) {
-        return IsMeaningfulForDecimalUnit $size
-    }
-
-    throw [System.ArgumentException]::new("Unknown unit: $unit")
 }

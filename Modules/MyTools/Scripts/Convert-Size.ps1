@@ -40,7 +40,7 @@ Case-sensitive.
 The number of decimals to include in the result.
 Defaults to 4.
 .Example
-Convert-Size -Value 8 -From b -To B
+Convert-Size -Value 8 -From bit -To byte
 1
 .Example
 Convert-Size -Value 1 -From GiB -To KiB
@@ -119,6 +119,7 @@ function Convert-Size {
 
 			if ($From -ceq $To) {
                 Write-Verbose "From equals To, no conversion required."
+
 				return $size
             }
 
@@ -142,7 +143,7 @@ function Convert-Size {
 #>
 function ExpandSizeForPrefixScriptBlock() {
     return { 
-        param([double]$size, $prefixConfig)
+        param([double]$size, [PSObject]$prefixConfig)
 
         return $size * [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
     }
@@ -153,7 +154,7 @@ function ExpandSizeForPrefixScriptBlock() {
 #>
 function ReduceSizeForPrefixScriptBlock() {
     return { 
-        param([double]$size, $prefixConfig)
+        param([double]$size, [PSObject]$prefixConfig)
 
         return $size / [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
     }
@@ -169,7 +170,7 @@ function ChangeSize([double]$size, [string]$unit, [ScriptBlock]$action) {
         return &$action $size $prefixConfig
     }
 
-    # Just b and B units have no prefix.
+    # Just bit and byte units have no prefix.
     Write-Verbose "Unit : $unit has no prefix."
     
     return $size
