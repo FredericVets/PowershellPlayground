@@ -52,6 +52,8 @@ function Get-Size {
 
 			Write-Verbose "Total size of = $totalLength"
 			Write-Output $totalLength
-		}
+        }
+        
+        # TODO : right now specifying a path to a file ends up in infinite loop.
 	}
 }

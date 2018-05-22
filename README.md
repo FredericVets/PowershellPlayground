@@ -7,5 +7,6 @@ Contains some handy cmdLets that I think should be included by default.
 * Get-SizeConverted : Combination of the 2 above. Supports the _-ShowOnlyRelevant_ switch, to automatically pick the most meaningful unit for that specific size.
 * Update-File : the PowerShell equivalent of the unix touch command.
 * Suspend-Computer and Hibernate-Computer : suspend / hibernate the local machine.
+* Get-ConfirmImpact : displays the value of the ConfirmImpact property of the cmdLet binding metadata attribute.
 
 See the cmdLet specific _Get-Help_ pages for detailed info.

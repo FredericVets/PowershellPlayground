@@ -117,22 +117,41 @@ function ConvertToSizesForPrefixType([string]$prefixType, [long]$sizeInByte, [in
     # To get a case sensitive hashtable : explicitly use New-Object -TypeName System.Collections.Hashtable and use the 
     # index or dot notation.
     $sizes = [Ordered]@{}
+    $convertParams = @{
+        'From' = [UnitType]::BYTE.Name
+        'Precision' = $precision
+        'Value' = $sizeInByte
+    }
 
     # Only use unit type byte.
-    $units = GetAllUnits $prefixType $UNIT_TYPE_BYTE.Name
+    $units = GetByteUnits $prefixType
     foreach ($unit in $units) {
-        $converted = Convert-Size -Value $sizeInByte -From byte -To $unit -Precision $precision
+        $convertParams['To'] = $unit.ToString()
+        
+        # Use splatting.
+        $converted = Convert-Size @convertParams
         if (-not $onlyMeaningful) {
-            $sizes[$unit] = $converted
+            $sizes[$unit.ToString()] = $converted
 
             continue
         }
-        if (IsMeaningfulForUnit $unit $converted) { 
+        if ($unit.IsMeaningFulFor($converted)) { 
             $sizes[$unit] = $converted
         }
     }
 
     return $sizes
+}
+
+<# We only care for units that have unit type -eq byte. #>
+function GetByteUnits([string]$prefixType) {
+    switch ($prefixType) {
+        'Binary' { return GetUnitsForTypes ([Prefixtype]::BINARY) ([UnitType]::BYTE)  }
+        'Decimal' { return GetUnitsForTypes ([Prefixtype]::DECIMAL) ([UnitType]::BYTE)  }
+        'Both' { return GetUnitsForUnitType ([UnitType]::BYTE) }
+    }
+
+    throw [System.ArgumentException]::new("Invalid prefix type : $prefixType.")
 }
 
 function CreateResultObject([string]$literalPath, $sizes) {

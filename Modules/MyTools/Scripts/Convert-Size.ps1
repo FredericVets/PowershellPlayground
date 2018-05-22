@@ -123,14 +123,17 @@ function Convert-Size {
 				return $size
             }
 
+            [unit]$fromUnit = GetUnitForName $From
+            [unit]$toUnit = GetUnitForName $To
+
             $expandSizeAction = ExpandSizeForPrefixScriptBlock
             $reduceSizeAction = ReduceSizeForPrefixScriptBlock
             
-            $expandedSize = ChangeSize $size $From $expandSizeAction
-            $reducedSize = ChangeSize $expandedSize $To $reduceSizeAction
+            $expandedSize = ChangeSize $size $fromUnit $expandSizeAction
+            $reducedSize = ChangeSize $expandedSize $toUnit $reduceSizeAction
 
-            $result = ConvertUnitType $reducedSize $From $To
-            Write-Verbose "Non rounded result : $result"
+            $result = ConvertUnitType $reducedSize $fromUnit $toUnit
+            Write-Verbose "Non rounded result : $result."
             Write-Verbose "Rounding result to $Precision decimals."
             
             return [System.Math]::Round($result, $Precision)
@@ -143,9 +146,9 @@ function Convert-Size {
 #>
 function ExpandSizeForPrefixScriptBlock() {
     return { 
-        param([double]$size, [PSObject]$prefixConfig)
+        param([double]$size, [Unit]$unit)
 
-        return $size * [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
+        return $size * [System.Math]::Pow($unit.Prefix.PrefixType.Base, $unit.Prefix.Exponent)
     }
 }
 
@@ -154,40 +157,35 @@ function ExpandSizeForPrefixScriptBlock() {
 #>
 function ReduceSizeForPrefixScriptBlock() {
     return { 
-        param([double]$size, [PSObject]$prefixConfig)
+        param([double]$size, [Unit]$unit)
 
-        return $size / [System.Math]::Pow($prefixConfig.Base, $prefixConfig.Exponent)
+        return $size / [System.Math]::Pow($unit.Prefix.PrefixType.Base, $unit.Prefix.Exponent)
     }
 }
 
-function ChangeSize([double]$size, [string]$unit, [ScriptBlock]$action) {
-    if (HasPrefix $unit) {
-        $prefix = GetPrefix $unit
-        Write-Verbose "Unit : $unit has prefix : $prefix."
-        $prefixConfig = GetPrefixConfig $prefix
+function ChangeSize([double]$size, [unit]$unit, [ScriptBlock]$action) {
+    if ($unit.HasPrefix()) {
+        Write-Verbose "Unit : {0} has prefix : {1}." -f $unit.ToString(), $unit.Prefix.Symbol
         
         # Call the action with 2 parameters using the call operator.
-        return &$action $size $prefixConfig
+        return &$action $size $unit
     }
 
     # Just bit and byte units have no prefix.
-    Write-Verbose "Unit : $unit has no prefix."
+    Write-Verbose "Unit : {0} has no prefix." -f $unit.ToString()
     
     return $size
 }
 
-function ConvertUnitType([double]$size, [string]$fromUnit, [string]$toUnit) {
-    $fromUnitType = GetUnitType $fromUnit
-    $toUnitType = GetUnitType $toUnit
-
+function ConvertUnitType([double]$size, [Unit]$fromUnit, [Unit]$toUnit) {
     # Reference equality for HashTable instance.
-    if ($fromUnitType -eq $toUnitType) {
-        Write-Verbose "Same unit type : $($fromUnitType.Name)"
+    if ($fromUnit.UnitType -eq $toUnit.UnitType) {
+        Write-Verbose "Same unit type : {0}." -f $fromUnit.UnitType
 
         return $size
     }
     # Reference equality.
-    if ($fromUnitType -eq $UNIT_TYPE_BIT) {
+    if ($fromUnit.UnitType -eq [UnitType]::BIT) {
         Write-Verbose 'From bit to byte : / 8.'
 
         return $size / 8
