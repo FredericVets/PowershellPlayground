@@ -40,7 +40,7 @@ class Unit {
             return ($size -ge 1) -and ($size -le [PrefixType]::BINARY_BASE)
         }
 
-        # Also the case for bit and byte unit.
+        # Since the bit and byte unit don't have a prefix, they will be compared the decimal way.
         return ($size -ge 1) -and ($size -le [PrefixType]::DECIMAL_BASE)
     }
 

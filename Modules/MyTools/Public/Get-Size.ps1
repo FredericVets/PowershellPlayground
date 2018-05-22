@@ -69,7 +69,7 @@ function Get-Size {
 This is confusing.
 Suppose I have a file named file.txt.
 If I enter 'Get-ChildItem -Path .\file.txt -Directory', I get a result (file.txt) although it's not a directory ...
-This can lead to an infinite loop in the script above.
+If not checked, this can lead to an infinite loop in the script above.
 #>
 function IsDirectory($fileSystemItem) {
     return $fileSystemItem.Mode -like 'd*'
