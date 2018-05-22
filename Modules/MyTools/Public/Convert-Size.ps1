@@ -96,19 +96,23 @@ function Convert-Size {
         [Parameter(Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
 		[double[]]
-		$Value,
+        $Value,
+        
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        # TODO : make dynamic.
+        # TODO : make dynamic?
         [ValidateScript({ ValidateUnit $_ })]
 		[string]
-		$From,
+        $From,
+        
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        # TODO : make dynamic.
+        # TODO : make dynamic?
         [ValidateScript({ ValidateUnit $_ })]
 		[string]
         $To,
+
+        [Parameter()]
         [ValidateScript({ $_ -ge 1 })]
 		[int]
 		$Precision = 4

@@ -5,6 +5,8 @@ In case of directory : itterates recursively through the directory structure and
 .Parameter LiteralPath
 A path to a file / directory. Interpreted as a literalpath.
 Accepts a single value or an array.
+.Parameter Force
+Gets hidden files and folders. By default, hidden files and folder are excluded.
 .Example
 Get-Size $home\downloads
 309979761917
@@ -27,14 +29,21 @@ function Get-Size {
 		[ValidateScript({ Test-Path -LiteralPath $_ })]
 		[Alias("Path")]
 		[string[]]
-		$LiteralPath
+        $LiteralPath,
+
+        [Parameter()]
+        [switch]
+        $Force
 	)
 	Process {
-		foreach ($item in $LiteralPath) {
-			[long]$totalLength = 0
+		foreach ($path in $LiteralPath) {
+            [long]$totalLength = 0
+            $commonParams = @{
+                'LiteralPath' = $path
+                'Force' = $Force
+            }
 
-			# Include hidden directories.
-			$dirs = Get-ChildItem -LiteralPath $item -Directory -Force
+			$dirs = Get-ChildItem @commonParams -Directory
 			foreach ($d in $dirs) {
                 if (-not (IsDirectory $d)) {
                     continue
@@ -44,8 +53,7 @@ function Get-Size {
 				$totalLength += Get-Size $d.FullName
 			}
 
-			# Include hidden files.
-			$files = Get-ChildItem -LiteralPath $item -File -Force
+			$files = Get-ChildItem @commonParams -File
 			foreach ($f in $files) {
 				Write-Verbose ("Adding size of : {0}" -f $f.FullName)
 				$totalLength += $f.Length
@@ -60,7 +68,7 @@ function Get-Size {
 <#
 This is confusing.
 Suppose I have a file named file.txt.
-If I enter 'Get-ChildItem -Path .\file.txt -Directory', I get a result although it's not a directory ...
+If I enter 'Get-ChildItem -Path .\file.txt -Directory', I get a result (file.txt) although it's not a directory ...
 This can lead to an infinite loop in the script above.
 #>
 function IsDirectory($fileSystemItem) {

@@ -24,6 +24,8 @@ Defaults to Both.
 .Parameter Precision
 The number of decimals to include in the results.
 Defaults to 4.
+.Parameter Force
+Gets hidden files and folders. By default, hidden files and folder are excluded.
 .Example
 Get-SizeConverted $HOME\Downloads
 
@@ -91,20 +93,34 @@ function Get-SizeConverted {
 		[ValidateScript({ Test-Path -LiteralPath $_ })]
 		[Alias('Path')]
 		[string[]]
-		$LiteralPath,
+        $LiteralPath,
+
+        [Parameter()]
         [Alias('Human', 'HumanReadable')]
         [switch]
         $ShowOnlyMeaningful,
+
+        [Parameter()]
         # hard-coded, no ValidateScript since these values are a simple set and I want to keep tab- completion enabled.
 		[ValidateSet('Both', 'Binary', 'Decimal')]
 		[string]
         $PrefixType = 'Both',
+
+        [Parameter()]
         [int]
-		$Precision = 4
+        $Precision = 4,
+        
+        [Parameter()]
+        [switch]
+        $Force
     )
    	Process {       
         foreach ($path in $LiteralPath) {
-			[long]$sizeInByte = Get-Size -LiteralPath $path
+            $params = @{
+                'LiteralPath' = $path
+                'Force' = $Force
+            }
+			[long]$sizeInByte = Get-Size @params
 			$sizes = ConvertToSizesForPrefixType $PrefixType $sizeInByte $Precision $ShowOnlyMeaningful
             
             CreateResultObject $path $sizes
