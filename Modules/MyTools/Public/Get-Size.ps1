@@ -33,27 +33,36 @@ function Get-Size {
 		foreach ($item in $LiteralPath) {
 			[long]$totalLength = 0
 
-			Write-Verbose "Starting to get size of : $item"
 			# Include hidden directories.
 			$dirs = Get-ChildItem -LiteralPath $item -Directory -Force
 			foreach ($d in $dirs) {
+                if (-not (IsDirectory $d)) {
+                    continue
+                }
+
 				# Recursive call.
-				$d = Get-Size $d.FullName
-				Write-Verbose "Get-Size returned $d"
-				$totalLength += $d
+				$totalLength += Get-Size $d.FullName
 			}
 
 			# Include hidden files.
 			$files = Get-ChildItem -LiteralPath $item -File -Force
 			foreach ($f in $files) {
-				Write-Verbose "Adding size of : $($f.FullName)"
+				Write-Verbose ("Adding size of : {0}" -f $f.FullName)
 				$totalLength += $f.Length
 			}
 
 			Write-Verbose "Total size of = $totalLength"
 			Write-Output $totalLength
         }
-        
-        # TODO : right now specifying a path to a file ends up in infinite loop.
 	}
+}
+
+<#
+This is confusing.
+Suppose I have a file named file.txt.
+If I enter 'Get-ChildItem -Path .\file.txt -Directory', I get a result although it's not a directory ...
+This can lead to an infinite loop in the script above.
+#>
+function IsDirectory($fileSystemItem) {
+    return $fileSystemItem.Mode -like 'd*'
 }
