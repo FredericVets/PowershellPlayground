@@ -1,0 +1,13 @@
+# Ignore Visual Studio Code workspace files.
+*.code-workspace
+
+# Created by https://www.gitignore.io/api/powershell
+
+### PowerShell ###
+# Exclude packaged modules
+*.zip
+
+# Exclude .NET assemblies from source
+*.dll
+
+# End of https://www.gitignore.io/api/powershell
