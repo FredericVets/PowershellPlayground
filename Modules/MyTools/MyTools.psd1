@@ -76,12 +76,12 @@ NestedModules = @(
     'Classes\Size\Prefix.ps1',
     'Classes\Size\Unit.ps1',
     'Private\Size\Configuration.ps1',
-    'Scripts\Convert-Size.ps1',
-    'Scripts\Get-Size.ps1',
-    'Scripts\Get-SizeConverted.ps1',
-    'Scripts\Update-File.ps1',
-    'Scripts\Set-PowerState.ps1',
-    'Scripts\Get-ConfirmImpact.ps1'
+    'Public\Convert-Size.ps1',
+    'Public\Get-Size.ps1',
+    'Public\Get-SizeConverted.ps1',
+    'Public\Update-File.ps1',
+    'Public\Set-PowerState.ps1',
+    'Public\Get-ConfirmImpact.ps1'
 )
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
@@ -92,7 +92,8 @@ FunctionsToExport = @(
     'Update-File',
     'Set-PowerState',
         'Suspend-Computer',
-        'Hibernate-Computer'
+        'Hibernate-Computer',
+    'Get-ConfirmImpact'
 )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.

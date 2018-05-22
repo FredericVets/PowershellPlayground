@@ -165,14 +165,14 @@ function ReduceSizeForPrefixScriptBlock() {
 
 function ChangeSize([double]$size, [unit]$unit, [ScriptBlock]$action) {
     if ($unit.HasPrefix()) {
-        Write-Verbose "Unit : {0} has prefix : {1}." -f $unit.ToString(), $unit.Prefix.Symbol
+        Write-Verbose ('Unit : {0} has prefix : {1}.' -f $unit.ToString(), $unit.Prefix.Symbol)
         
         # Call the action with 2 parameters using the call operator.
         return &$action $size $unit
     }
 
     # Just bit and byte units have no prefix.
-    Write-Verbose "Unit : {0} has no prefix." -f $unit.ToString()
+    Write-Verbose ('Unit : {0} has no prefix.' -f $unit.ToString())
     
     return $size
 }
@@ -180,7 +180,7 @@ function ChangeSize([double]$size, [unit]$unit, [ScriptBlock]$action) {
 function ConvertUnitType([double]$size, [Unit]$fromUnit, [Unit]$toUnit) {
     # Reference equality for HashTable instance.
     if ($fromUnit.UnitType -eq $toUnit.UnitType) {
-        Write-Verbose "Same unit type : {0}." -f $fromUnit.UnitType
+        Write-Verbose ('Same unit type : {0}.' -f $fromUnit.UnitType)
 
         return $size
     }
