@@ -47,6 +47,9 @@ function ValidateUnit {
 
 function GetUnitForName([string]$unit) {
     [Unit]$unit = $UNITS | Where-Object { $_.ToString() -ceq $unit }
+    if ($unit -eq $null) {
+        throw [System.ArgumentException]::new("Invalid unit : $unit.")
+    }
 
     return $unit
 }

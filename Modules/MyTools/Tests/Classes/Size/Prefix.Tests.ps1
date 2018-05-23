@@ -1,10 +1,8 @@
-$here = (Split-Path -Parent $MyInvocation.MyCommand.Path) -replace '\\Tests', ''
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '.Tests.', '.'
+$here = (Split-Path -Parent $MyInvocation.MyCommand.Path)
 
-. "$here\PrefixType.ps1"
-. "$here\$sut"
+. "$here\..\..\SourceClasses.ps1"
 
-Describe 'Prefix' {
+Describe 'Classes.Size.Prefix' {
     It 'has a correct ToString() representation' {
         $p = [Prefix]::new(
             'whatever', 
@@ -12,6 +10,6 @@ Describe 'Prefix' {
             1,
             [PrefixType]::new('whatever', 1024))
 
-        $p | should be 'whatever'
+        $p | Should Be 'whatever'
     }
 }

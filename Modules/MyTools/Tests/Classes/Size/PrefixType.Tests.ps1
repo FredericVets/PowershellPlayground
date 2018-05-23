@@ -1,18 +1,19 @@
-$here = (Split-Path -Parent $MyInvocation.MyCommand.Path) -replace '\\Tests', ''
+$here = (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$source = $here -replace '\\Tests', ''
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '.Tests.', '.'
 
-. "$here\$sut"
+. "$source\$sut"
 
-Describe 'PrefixType' {
+Describe 'Classes.Size.PrefixType' {
     $p = [PrefixType]::new('whatever', 1024)
 
     It 'detects a binary prefix type' {
-        $p.IsBinary() | should be $true
+        $p.IsBinary() | Should Be $true
     }
     It "doesn't detect a decimal prefix type" {
-        $p.IsDecimal() | should be $false
+        $p.IsDecimal() | Should Be $false
     }
     It 'has a correct ToString() representation' {
-        $p | should be 'whatever'
+        $p | Should Be 'whatever'
     }
 }

@@ -1,12 +1,13 @@
-$here = (Split-Path -Parent $MyInvocation.MyCommand.Path) -replace '\\Tests', ''
+$here = (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$source = $here -replace '\\Tests', ''
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '.Tests.', '.'
 
-. "$here\$sut"
+. "$source\$sut"
 
-Describe 'UnitType' {
+Describe 'Classes.Size.UnitType' {
     $u = [UnitType]::new('whatever', 'si')
     
     It 'has a correct ToString() representation' {
-        $u | should be 'whatever'
+        $u | Should Be 'whatever'
     }
 }
