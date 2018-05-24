@@ -11,12 +11,12 @@ $sourceClasses = Resolve-Path "$here\..\..\SourceClasses.ps1"
 . "$source\$sut"
 
 # Some extra information.
-"here = $here"
-"source = $source"
-"sut = $sut"
-"PSScriptRoot = $PSScriptRoot"
-("MyInvocation.MyCommand = {0}" -f $MyInvocation.MyCommand)
-("MyInvocation.MyCommand.Path = {0}" -f $MyInvocation.MyCommand.Path)
+"`$here = $here"
+"`$source = $source"
+"`$sut = $sut"
+"`$PSScriptRoot = $PSScriptRoot"
+("`$MyInvocation.MyCommand = {0}" -f $MyInvocation.MyCommand)
+("`$MyInvocation.MyCommand.Path = {0}" -f $MyInvocation.MyCommand.Path)
 
 Describe 'Private.Size.Configuration.PREFIXES' {
     It 'has 16 prefixes' {
@@ -90,9 +90,6 @@ Describe 'Private.Size.Configuration.GetUnitsForUnitType' {
     It 'Returns (8 + 8 + 1) units with unit type byte' {
         $units.Length | Should Be (8 + 8 + 1)
     }
-    It 'throw when no argument is supplied' {
-        { GetUnitsForUnitType } | Should Throw
-    }
 }
 
 Describe 'Private.Size.Configuration.GetUnitsForTypes' {
@@ -103,9 +100,6 @@ Describe 'Private.Size.Configuration.GetUnitsForTypes' {
     }
     It 'Returns the expected number of units' {
         $units.Length | Should Be (8 + 1)
-    }
-    It 'throw when no argument is supplied' {
-        { GetUnitsForTypes } | Should Throw
     }
 }
 
