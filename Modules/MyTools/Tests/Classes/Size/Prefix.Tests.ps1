@@ -1,15 +1,29 @@
-$here = (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$here = Split-Path -Parent $MyInvocation.MyCommand.Path
+$sourceClasses = Resolve-Path "$here\..\..\SourceClasses.ps1"
 
-. "$here\..\..\SourceClasses.ps1"
+. $sourceClasses
 
 Describe 'Classes.Size.Prefix' {
-    It 'has a correct ToString() representation' {
-        $p = [Prefix]::new(
+    $pt = [PrefixType]::new('whatever', 1024)
+    $p = [Prefix]::new(
             'whatever', 
-            'si',
+            'Si',
             1,
-            [PrefixType]::new('whatever', 1024))
+            $pt)
 
-        $p | Should Be 'whatever'
+    It 'has the expected name' {
+        $p.Name | Should BeExactly 'whatever'
+    }
+    It 'has the expected symbol' {
+        $p.Symbol | Should BeExactly 'Si'
+    }
+    It 'has the expected exponent' {
+        $p.Exponent | Should Be 1
+    }
+    It 'has the expected prefix type' {
+        $p.PrefixType | Should Be $pt
+    }
+    It 'has a correct ToString() representation' {
+        $p | Should BeExactly 'whatever'
     }
 }

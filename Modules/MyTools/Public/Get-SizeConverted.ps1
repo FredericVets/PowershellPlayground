@@ -139,7 +139,7 @@ function ConvertToSizesForPrefixType([string]$prefixType, [long]$sizeInByte, [in
     # index or dot notation.
     $sizes = [Ordered]@{}
     $convertParams = @{
-        'From' = [UnitType]::BYTE.Name
+        'From' = [UnitType]::BYTE.Symbol
         'Precision' = $precision
         'Value' = $sizeInByte
     }

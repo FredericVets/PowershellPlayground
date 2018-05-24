@@ -30,17 +30,17 @@ Windows displays decimal prefixes, but they actually should be binary prefixes.
 The value(s) to be converted. Accepts a single value or an array.
 .Parameter From
 The source unit. This is the unit of the Value parameter.
-Supported values : bit, byte, Kib, KiB, Mib, MiB, Gib, GiB, Tib, TiB, Pib, PiB, Eib, EiB, Zib, ZiB, Yib, YiB, Kb, KB, Mb, MB, Gb, GB, Tb, TB, Pb, PB, Eb, EB, Zb, ZB, Yb, YB.
+Supported values : b, B, Kib, KiB, Mib, MiB, Gib, GiB, Tib, TiB, Pib, PiB, Eib, EiB, Zib, ZiB, Yib, YiB, Kb, KB, Mb, MB, Gb, GB, Tb, TB, Pb, PB, Eb, EB, Zb, ZB, Yb, YB.
 Case-sensitive.
 .Parameter To
 The target unit. This is the unit the result will be in.
-Supported values : bit, byte, Kib, KiB, Mib, MiB, Gib, GiB, Tib, TiB, Pib, PiB, Eib, EiB, Zib, ZiB, Yib, YiB, Kb, KB, Mb, MB, Gb, GB, Tb, TB, Pb, PB, Eb, EB, Zb, ZB, Yb, YB.
+Supported values : b, B, Kib, KiB, Mib, MiB, Gib, GiB, Tib, TiB, Pib, PiB, Eib, EiB, Zib, ZiB, Yib, YiB, Kb, KB, Mb, MB, Gb, GB, Tb, TB, Pb, PB, Eb, EB, Zb, ZB, Yb, YB.
 Case-sensitive.
 .Parameter Precision
 The number of decimals to include in the result.
 Defaults to 4.
 .Example
-Convert-Size -Value 8 -From bit -To byte
+Convert-Size -Value 8 -From b -To B
 1
 .Example
 Convert-Size -Value 1 -From GiB -To KiB
@@ -49,7 +49,7 @@ Convert-Size -Value 1 -From GiB -To KiB
 Convert-Size -Value 1 -From MiB -To MB -Precision 6
 1,048576
 .Example
-Convert-Size -Value 1 -From Kib -to byte -Verbose
+Convert-Size -Value 1 -From Kib -to b -Verbose
 VERBOSE: Converting 1 Kib to B.
 VERBOSE: Unit : Kib has prefix : Ki.
 VERBOSE: Unit : B has no prefix.

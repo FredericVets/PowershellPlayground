@@ -2,8 +2,8 @@ class PrefixType {
     static [int] $BINARY_BASE = 1024
     static [int] $DECIMAL_BASE = 1000
 
-    static [PrefixType]$BINARY = [PrefixType]::new('Binary', 1024)
-    static [PrefixType]$DECIMAL = [PrefixType]::new('Decimal', 1000)
+    static [PrefixType]$BINARY = [PrefixType]::new('Binary', [PrefixType]::BINARY_BASE)
+    static [PrefixType]$DECIMAL = [PrefixType]::new('Decimal', [PrefixType]::DECIMAL_BASE)
 
     [ValidateNotNullOrEmpty()]
     [string]$Name

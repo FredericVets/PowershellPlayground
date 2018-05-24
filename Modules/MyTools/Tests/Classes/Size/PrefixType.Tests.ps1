@@ -1,19 +1,25 @@
-$here = (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $source = $here -replace '\\Tests', ''
 $sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '.Tests.', '.'
 
 . "$source\$sut"
 
 Describe 'Classes.Size.PrefixType' {
-    $p = [PrefixType]::new('whatever', 1024)
+    $prefixType = [PrefixType]::new('whatever', 1024)
 
+    It 'has the expected name' {
+        $prefixType.Name | Should BeExactly 'whatever'
+    }
+    It 'has the expected base' {
+        $prefixType.Base | Should Be 1024
+    }
     It 'detects a binary prefix type' {
-        $p.IsBinary() | Should Be $true
+        $prefixType.IsBinary() | Should Be $true
     }
     It "doesn't detect a decimal prefix type" {
-        $p.IsDecimal() | Should Be $false
+        $prefixType.IsDecimal() | Should Be $false
     }
     It 'has a correct ToString() representation' {
-        $p | Should Be 'whatever'
+        $prefixType | Should BeExactly 'whatever'
     }
 }

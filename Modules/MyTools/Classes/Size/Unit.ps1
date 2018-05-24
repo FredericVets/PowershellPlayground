@@ -13,6 +13,22 @@ class Unit {
         $this.UnitType = $unitType
     }
 
+    [string] Name() {
+        if ($this.HasPrefix()) {
+            return $this.Prefix.Name + $this.UnitType.Name
+        }
+
+        return $this.UnitType.Name
+    }
+
+    [string] Symbol() {
+        if ($this.HasPrefix()) {
+            return $this.Prefix.Symbol + $this.UnitType.Symbol
+        }
+
+        return $this.UnitType.Symbol
+    }
+
     [bool] HasPrefix() {
         return $this.Prefix
     }
@@ -45,11 +61,6 @@ class Unit {
     }
 
     [string] ToString() {
-        if ($this.HasPrefix()) {
-            return $this.Prefix.Symbol + $this.UnitType.Symbol
-        }
-
-        # For bit and byte, return the full name instead of the symbol.
-        return $this.UnitType.Name
+        return $this.Symbol()
     }
 }

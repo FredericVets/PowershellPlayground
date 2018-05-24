@@ -1,10 +1,11 @@
-$here = (Split-Path -Parent $MyInvocation.MyCommand.Path)
+$here = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-Write-Host "Sourcing classes."
+Write-Verbose 'Sourcing classes ...'
 
+# Order matters!
 . "$here\..\Classes\Size\PrefixType.ps1"
 . "$here\..\Classes\Size\UnitType.ps1"
 . "$here\..\Classes\Size\Prefix.ps1"
 . "$here\..\Classes\Size\Unit.ps1"
 
-Write-Host 'Classes are sourced.'
+Write-Verbose 'Classes are sourced.'

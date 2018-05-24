@@ -21,7 +21,7 @@ $UNITS = $PREFIXES |
     ForEach-Object -Begin {
         # Add bit and byte.
         [Unit]::new([UnitType]::BIT)
-        [Unit]::new([UnitType]::Byte)
+        [Unit]::new([UnitType]::BYTE)
     } -Process {
         # Compose the units.
         # Example : Ki + B = KiB
@@ -45,7 +45,14 @@ function ValidateUnit {
     throw [System.ArgumentException]::new("$unit is not in the list of valid units : $allUnits.")
 }
 
-function GetUnitForName([string]$unit) {
+function GetUnitForName {
+    Param(
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $unit
+    )
+
     [Unit]$unit = $UNITS | Where-Object { $_.ToString() -ceq $unit }
     if ($unit -eq $null) {
         throw [System.ArgumentException]::new("Invalid unit : $unit.")
@@ -54,12 +61,28 @@ function GetUnitForName([string]$unit) {
     return $unit
 }
 
-function GetUnitsForUnitType([UnitType]$unitType) {
+function GetUnitsForUnitType {
+    Param(
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNull()]
+        [UnitType]
+        $unitType
+    )
     return $UNITS |
         UnitTypeFilter $unitType
 }
 
-function GetUnitsForTypes([PrefixType]$prefixType, [UnitType]$unitType) {
+function GetUnitsForTypes {
+    Param(
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNull()]
+        [PrefixType]
+        $prefixType,
+        [Parameter(Mandatory=$true)]
+        [ValidateNotNull()]
+        [UnitType]
+        $unitType
+    )
     return $UNITS | 
         PrefixTypeFilter $prefixType |
         UnitTypeFilter $unitType
