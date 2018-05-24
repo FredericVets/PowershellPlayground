@@ -1,10 +1,8 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
-# Remove the Tests directory.
-$source = $here -replace '\\Tests', ''
-# Get-Whatever.Tests.ps1 -> Get-Whatever.ps1
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '.Tests.', '.'
+$sourceSUTs = Resolve-Path "$here\..\..\SourceSubjectsUnderTest.ps1"
 
-. "$source\$sut"
+. $sourceSUTs
+. SourceClasses
 
 Describe 'Classes.Size.UnitType' {
     $unitType = [UnitType]::new('whatever', 'Si')

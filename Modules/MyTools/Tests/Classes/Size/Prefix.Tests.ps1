@@ -1,7 +1,8 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$sourceClasses = Resolve-Path "$here\..\..\SourceClasses.ps1"
+$sourceSUTs = Resolve-Path "$here\..\..\SourceSubjectsUnderTest.ps1"
 
-. $sourceClasses
+. $sourceSUTs
+. SourceClasses
 
 Describe 'Classes.Size.Prefix' {
     $pt = [PrefixType]::new('whatever', 1024)

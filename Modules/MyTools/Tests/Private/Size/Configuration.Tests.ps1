@@ -1,19 +1,13 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
-# Remove the Tests directory.
-$source = $here -replace '\\Tests', ''
-# Get-Whatever.Tests.ps1 -> Get-Whatever.ps1
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '.Tests.', '.'
+$sourceSUTs = Resolve-Path "$here\..\..\SourceSubjectsUnderTest.ps1"
 
-$sourceClasses = Resolve-Path "$here\..\..\SourceClasses.ps1"
-
-# Source dependencies.
-. $sourceClasses
-. "$source\$sut"
+. $sourceSUTs
+. SourceClasses
+. SourcePrivate
 
 # Some extra information.
 "`$here = $here"
-"`$source = $source"
-"`$sut = $sut"
+"`$sourceSUTs = $sourceSUTs"
 "`$PSScriptRoot = $PSScriptRoot"
 ("`$MyInvocation.MyCommand = {0}" -f $MyInvocation.MyCommand)
 ("`$MyInvocation.MyCommand.Path = {0}" -f $MyInvocation.MyCommand.Path)

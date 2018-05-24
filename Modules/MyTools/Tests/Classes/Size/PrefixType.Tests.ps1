@@ -1,8 +1,8 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
-$source = $here -replace '\\Tests', ''
-$sut = (Split-Path -Leaf $MyInvocation.MyCommand.Path) -replace '.Tests.', '.'
+$sourceSUTs = Resolve-Path "$here\..\..\SourceSubjectsUnderTest.ps1"
 
-. "$source\$sut"
+. $sourceSUTs
+. SourceClasses
 
 Describe 'Classes.Size.PrefixType' {
     $prefixType = [PrefixType]::new('whatever', 1024)
