@@ -56,6 +56,9 @@ Describe 'Private.Size.Configuration' {
         It 'Throws for invalid unit' {
             { ValidateUnit 'Bla' } | Should Throw
         }
+        It 'Is case sensitive' {
+            { ValidateUnit 'kib'} | Should Throw
+        }
     }
     Context 'GetUnitForName' {
         It 'Returns a unit for valid name' {
@@ -69,6 +72,9 @@ Describe 'Private.Size.Configuration' {
         }
         It 'Throws for invalid name' {
             { GetUnitForName 'Bla' } | Should Throw
+        }
+        It 'Is case sensitive' {
+            { ValidateUnit 'kib'} | Should Throw
         }
     }
     Context 'GetUnitsForUnitType' {
