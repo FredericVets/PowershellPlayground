@@ -11,3 +11,4 @@ Contains some handy cmdLets that I think should be included by default.
 * Get-MyPublicIP : Returns your publicly visible ip address.
 
 See the cmdLet specific _Get-Help_ pages for detailed info.
+(or the unit tests as well)
