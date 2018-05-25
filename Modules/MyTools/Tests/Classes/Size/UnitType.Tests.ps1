@@ -1,10 +1,10 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sourceSUTs = Resolve-Path "$here\..\..\SourceSubjectsUnderTest.ps1"
 
-. $sourceSUTs
-. SourceClasses
-
 Describe 'Classes.Size.UnitType' {
+    . $sourceSUTs
+    . SourceClasses
+
     $unitType = [UnitType]::new('whatever', 'Si')
     
     It 'has the expected name' {

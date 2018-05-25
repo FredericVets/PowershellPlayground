@@ -33,16 +33,16 @@ function ValidateUnit {
     Param(
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        [string]$unit
+        [string]$unitSymbol
     )
     # Select -ExpandProperty obviously only works for properties and not for methods.
-    [string[]]$allUnits = $UNITS | ForEach-Object ToString
+    [string[]]$allUnits = $UNITS | ForEach-Object Symbol
     
-    if ($allUnits -ccontains $unit) {
+    if ($allUnits -ccontains $unitSymbol) {
         return $true
     }
 
-    throw [System.ArgumentException]::new("$unit is not in the list of valid units : $allUnits.")
+    throw [System.ArgumentException]::new("$unitSymbol is not in the list of valid units : $allUnits.")
 }
 
 function GetUnitForName {
@@ -50,12 +50,12 @@ function GetUnitForName {
         [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
         [string]
-        $unit
+        $unitSymbol
     )
 
-    [Unit]$unit = $UNITS | Where-Object { $_.ToString() -ceq $unit }
+    [Unit]$unit = $UNITS | Where-Object { $_.Symbol() -ceq $unitSymbol }
     if ($unit -eq $null) {
-        throw [System.ArgumentException]::new("Invalid unit : $unit.")
+        throw [System.ArgumentException]::new("Invalid unit : $unitSymbol.")
     }
 
     return $unit
@@ -107,7 +107,7 @@ filter UnitTypeFilter([UnitType]$unitType) {
     }
 }
 function GetAllUnitsAsString {
-    [string[]]$allUnits = $UNITS | ForEach-Object ToString
+    [string[]]$allUnits = $UNITS | ForEach-Object Symbol
 
     return [System.String]::Join(', ', $allUnits)
 }

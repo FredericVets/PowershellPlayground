@@ -1,5 +1,6 @@
-# Ignore Visual Studio Code workspace files.
+# Ignore Visual Studio Code files.
 *.code-workspace
+*.vscode
 
 # Created by https://www.gitignore.io/api/powershell
 

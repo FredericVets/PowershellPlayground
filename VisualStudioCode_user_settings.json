@@ -1,0 +1,12 @@
+// Contains the Visual Studio Code User Settings.
+// Rename to settings.json.
+// By default stored in %APPDATA%\Code\User\settings.json
+{
+    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "terminal.integrated.scrollback": 1000,
+    "window.zoomLevel": 0,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.minimap.enabled": false
+}

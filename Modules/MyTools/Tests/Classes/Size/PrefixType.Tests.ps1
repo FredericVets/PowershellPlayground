@@ -1,10 +1,10 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
 $sourceSUTs = Resolve-Path "$here\..\..\SourceSubjectsUnderTest.ps1"
 
-. $sourceSUTs
-. SourceClasses
-
 Describe 'Classes.Size.PrefixType' {
+    . $sourceSUTs
+    . SourceClasses
+
     $prefixType = [PrefixType]::new('whatever', 1024)
 
     It 'has the expected name' {

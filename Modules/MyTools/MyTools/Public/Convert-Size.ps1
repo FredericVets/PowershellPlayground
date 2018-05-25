@@ -50,13 +50,13 @@ Convert-Size -Value 1 -From MiB -To MB -Precision 6
 1,048576
 .Example
 Convert-Size -Value 1 -From Kib -to b -Verbose
-VERBOSE: Converting 1 Kib to B.
+VERBOSE: Converting 1 Kib to b.
 VERBOSE: Unit : Kib has prefix : Ki.
-VERBOSE: Unit : B has no prefix.
-VERBOSE: From bit to byte : / 8.
-VERBOSE: Non rounded result : 128
+VERBOSE: Unit : b has no prefix.
+VERBOSE: Same unit type : bit.
+VERBOSE: Non rounded result : 1024.
 VERBOSE: Rounding result to 4 decimals.
-128
+1024
 .Inputs
 System.Double[]
 .Notes
