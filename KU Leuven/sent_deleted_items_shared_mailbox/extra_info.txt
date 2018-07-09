@@ -1,0 +1,14 @@
+User profiles are located in the registry under :
+	HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList
+
+This contains several SID's.
+Click on one of those and look at the "ProfileImagePath" value to see which SID maps to which username.
+
+On my machine : 
+	S-1-5-18								%systemroot%\system32\config\systemprofile
+	S-1-5-19								%systemroot%\ServiceProfiles\LocalService
+	S-1-5-20								%systemroot%\ServiceProfiles\NetworkService
+	S-1-5-21-3657224482-858881392-1276985336-1000				C:\Users\Frederic
+	S-1-5-21-3657224482-858881392-1276985336-1010				C:\Users\test
+	S-1-5-82-1036420768-1044797643-1061213386-2937092688-4282445334		C:\Users\Classic .NET AppPool
+	S-1-5-82-3006700770-424185619-1745488364-794895919-4004696415		C:\Users\DefaultAppPool
