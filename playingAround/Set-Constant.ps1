@@ -1,0 +1,1 @@
+https://stackoverflow.com/questions/2608215/does-powershell-support-constants
