@@ -51,9 +51,9 @@ function CleanUpClientSideRendering() {
     Get-ChildItem $hklmClientPrintProvider |
     ForEach-Object {
         if ($_.Name -like '*\Servers') {
-            Write-Verbose "Cleaning up : $_.Name)"
+            Write-Verbose "Cleaning up : $($_.Name)"
 
-            Get-ChildItem $_ |
+            Get-ChildItem $_.PSPath |
             ForEach-Object {
                 Write-Verbose "Cleaning up : $_"
                 foreach ($p in $DSV_PRINT_SERVERS) {
@@ -67,16 +67,16 @@ function CleanUpClientSideRendering() {
         }
 
         # Check the different sid subfolders.
-        if (-not (Test-Path -LiteralPath "$_.PSPath\Printers\Connections" -PathType Container)) {
+        if (-not (Test-Path -LiteralPath "$($_.PSPath)\Printers\Connections" -PathType Container)) {
             return
         }
 
-        Get-ChildItem -LiteralPath "$_.PSPath\Printers\Connections" |
+        Get-ChildItem "$($_.PSPath)\Printers\Connections" |
         ForEach-Object {
             Write-Verbose "Cleaning up : $_"
             foreach ($p in $DSV_PRINT_SERVERS) {
                 if ($_.Name -like "*$p*") {
-                    Remove-Item -LiteralPath $_.PSPath -Recurse -Verose -Confirm
+                    Remove-Item -LiteralPath $_.PSPath -Recurse -Verbose -Confirm
                 }
             }
         }
