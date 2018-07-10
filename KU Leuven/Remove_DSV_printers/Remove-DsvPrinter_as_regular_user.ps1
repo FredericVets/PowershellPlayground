@@ -33,15 +33,15 @@ function DoesItemPropertyExist([string]$LiteralPath, [string]$PropertyName) {
 <# Helper function to easily switch between -Confirm (for testing) or -Verbose behaviour.
 Rest of the script call this function.  #>
 function My-RemoveItem([string]$LiteralPath, [bool]$Recurse) {
-    Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Confirm
+    #Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Confirm
 
-    #Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Verbose
+    Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Verbose
 }
 
 function My-RemoveItemProperty([string]$LiteralPath, [string]$Name) {
-    Remove-ItemProperty -LiteralPath $LiteralPath -Name $Name -Confirm
+    #Remove-ItemProperty -LiteralPath $LiteralPath -Name $Name -Confirm
 
-    #Remove-ItemProperty -LiteralPath $LiteralPath -Name $Name -Verbose
+    Remove-ItemProperty -LiteralPath $LiteralPath -Name $Name -Verbose
 }
 
 function RemoveItemPropertyThatStartsWithPrintServerName($LiteralPath) {
