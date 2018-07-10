@@ -82,7 +82,7 @@ function CleanUpClientSideRendering() {
 
         Get-ChildItem "$($_.PSPath)\Printers\Connections" |
         ForEach-Object {
-            Write-Verbose "Cleaning up : $_"
+            Write-Verbose "Cleaning up : $($_.Name)"
             foreach ($p in $DSV_PRINT_SERVERS) {
                 if ($_.Name -like "*$p*") {
                     My-RemoveItem $_.PSPath $true
