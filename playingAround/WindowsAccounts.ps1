@@ -4,7 +4,11 @@
 # The usual users, groups and builtin accounts.
 get-wmiobject -class "win32_account" -namespace "root\cimv2" | 
 	sort caption | 
-	format-table caption, __CLASS, FullName
+	format-table caption, __CLASS, FullName, sid
+
+Get-CimInstance -ClassName "Win32_UserAccount" -Namespace "root\cimv2" |
+	sort caption
+	Format-Table Caption, __CLASS, FullName, SID, Name, Status, AcountType
 
 # Windows Service Accounts (also called virtual accounts)
 get-service | foreach {Write-Host NT Service\$($_.Name)}
