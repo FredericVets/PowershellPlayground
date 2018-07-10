@@ -1,0 +1,14 @@
+References to DSV printers :
+ _ Computer\HKEY_CURRENT_USER\Printers\Settings
+ _ Computer\HKEY_CURRENT_USER\Software\KONICA MINOLTA\KONICA MINOLTA 554eSeriesPCL\dsv-p-prt01\DSV.P.DSA.KONICA.BH284E
+ _ Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\Devices
+ _ Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\PrinterPorts
+
+
+ _ Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Print\Connections\{3B33F2C0-D611-4A83-AAD1-24A2AC84BD0E}
+ 
+_ Computer\HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Control\DeviceClasses\{0ecef634-6ef0-472a-8085-5ad023ecbccd}\##?#SWD#PRINTENUM#{1914AED1-84A7-49D4-B804-08874F2A8335}#{0ecef634-6ef0-472a-8085-5ad023ecbccd}\#\Device Parameters
+ _ Computer\HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Enum\SWD\PRINTENUM\{1914AED1-84A7-49D4-B804-08874F2A8335}
+
+ _ Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\DeviceClasses\{0ecef634-6ef0-472a-8085-5ad023ecbccd}\##?#SWD#PRINTENUM#{1914AED1-84A7-49D4-B804-08874F2A8335}#{0ecef634-6ef0-472a-8085-5ad023ecbccd}\#\Device Parameters
+ _ Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\SWD\PRINTENUM\{1914AED1-84A7-49D4-B804-08874F2A8335}
