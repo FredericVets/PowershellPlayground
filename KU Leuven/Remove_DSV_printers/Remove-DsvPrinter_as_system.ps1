@@ -62,10 +62,8 @@ function CleanUpPrintEnum() {
     }
 }
 
-# Stop the spooler service.
 Stop-Service Spooler
 
 CleanUpPrintEnum
 
-# Restart the spooler service.
 Start-Service Spooler
