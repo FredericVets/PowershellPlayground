@@ -31,6 +31,14 @@ function DoesItemPropertyExist([string]$LiteralPath, [string]$PropertyName) {
     return $false
 }
 
+<# Helper function to easily switch between -Confirm (for testing) or -Verbose behaviour.
+Rest of the script call this function.  #>
+function My-RemoveItem([string]$LiteralPath, [bool]$Recurse) {
+    Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Confirm
+
+    #Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Verbose
+}
+
 function CleanUpPrintEnum() {
     $hklmPrinterEnum = 'HKLM:\SYSTEM\CurrentControlSet\Enum\SWD\PRINTENUM'
     if (-Not (Test-Path -LiteralPath $hklmPrinterEnum -PathType Container)) {
@@ -48,7 +56,7 @@ function CleanUpPrintEnum() {
         $friendlyName = Get-ItemPropertyValue -LiteralPath $_.PSPath -Name 'FriendlyName'
         foreach ($printServer in $DSV_PRINT_SERVERS) {
             if ($friendlyName -like "\\$printServer*") {
-                Remove-Item -LiteralPath $_.PSPath -Recurse -Verbose -Confirm
+                My-RemoveItem $_.PSPath $true
             }
         }
     }

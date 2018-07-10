@@ -30,12 +30,26 @@ function DoesItemPropertyExist([string]$LiteralPath, [string]$PropertyName) {
     return $false
 }
 
+<# Helper function to easily switch between -Confirm (for testing) or -Verbose behaviour.
+Rest of the script call this function.  #>
+function My-RemoveItem([string]$LiteralPath, [bool]$Recurse) {
+    Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Confirm
+
+    #Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Verbose
+}
+
+function My-RemoveItemProperty([string]$LiteralPath, [string]$Name) {
+    Remove-ItemProperty -LiteralPath $LiteralPath -Name $Name -Confirm
+
+    #Remove-ItemProperty -LiteralPath $LiteralPath -Name $Name -Verbose
+}
+
 function RemoveItemPropertyThatStartsWithPrintServerName($LiteralPath) {
     Write-Verbose "Cleaning up : $LiteralPath"
 
     foreach ($printServer in $DSV_PRINT_SERVERS) {
         if (DoesItemPropertyExist $LiteralPath "\\$printServer*") {
-            Remove-ItemProperty -LiteralPath $LiteralPath -Name "\\$printServer*" -Verbose -Confirm
+            My-RemoveItemProperty $LiteralPath "\\$printServer*"
         }
     }
 }
@@ -53,7 +67,7 @@ function CleanUpPrinterConnections() {
         $printServer = Get-ItemPropertyValue -LiteralPath $_.PSPath -Name "Server"
         foreach ($p in $DSV_PRINT_SERVERS) {
             if ($printServer -like "\\$p*") {
-                Remove-Item -LiteralPath $_.PSPath -Recurse -Verbose -Confirm
+                My-RemoveItem $_.PSPath $true
             }
         }
     }
