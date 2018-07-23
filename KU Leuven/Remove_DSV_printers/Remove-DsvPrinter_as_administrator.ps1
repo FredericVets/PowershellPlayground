@@ -6,6 +6,10 @@ This will remove any references to the DSV print servers : 'dsv-p-prt01' and 'ds
 
 Written by u0122713 @ 09/07/2018
 #>
+
+# Show Write-Verbose statements
+$VerbosePreference = "Continue"
+
 $DSV_PRINT_SERVERS = @('dsv-p-prt01', 'dsv-s-prt')
 
 <# 
