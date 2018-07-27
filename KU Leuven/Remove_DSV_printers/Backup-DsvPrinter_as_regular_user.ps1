@@ -6,7 +6,7 @@ Remove-DsvPrinter_as_regular_user.ps1 script.
 # Show Write-Verbose statements
 $VerbosePreference = "Continue"
 
-$BACKUP_FOLDER = 'Backup'
+$BACKUP_FOLDER = 'Backup\User'
 
 if (-Not (Test-Path $BACKUP_FOLDER)) {
     mkdir $BACKUP_FOLDER

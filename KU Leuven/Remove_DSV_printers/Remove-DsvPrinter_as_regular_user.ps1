@@ -1,7 +1,7 @@
 <#
 Run as REGULAR USER !!!
 
-This will remove any references to the DSV print servers : 'dsv-p-prt01' and 'dsv-s-prt' in the 
+This will remove any references to the DSV print servers : 'dsv-p-prt01' and 'dsv-s-prt' in the
 'HKCU:\' registry hive.
 
 Written by u0122713 @ 09/07/2018
@@ -36,15 +36,16 @@ function DoesItemPropertyExist([string]$LiteralPath, [string]$PropertyName) {
 <# Helper function to easily switch between -Confirm (for testing) or -Verbose behaviour.
 Rest of the script call this function.  #>
 function My-RemoveItem([string]$LiteralPath, [bool]$Recurse) {
-    #Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Confirm
+    #Remove-Item -LiteralPath LiteralPath -Recurse:$Recurse -Confirm
 
-    Remove-Item -LiteralPath $LiteralPath -Recurse:$Recurse -Verbose
+    Remove-Item -LiteralPath LiteralPath -Recurse:$Recurse -Verbose
 }
 
-function My-RemoveItemProperty([string]$LiteralPath, [string]$Name) {
-    #Remove-ItemProperty -LiteralPath $LiteralPath -Name $Name -Confirm
+function My-RemoveItemProperty([string]$Path, [string]$Name) {
+    # Can't use LiteralPath since $Name can contain wildcards!
 
-    Remove-ItemProperty -LiteralPath $LiteralPath -Name $Name -Verbose
+    #Remove-ItemProperty -Path $Path -Name $Name -Confirm
+    Remove-ItemProperty -Path $Path -Name $Name -Verbose
 }
 
 function RemoveItemPropertyThatStartsWithPrintServerName($LiteralPath) {

@@ -1,8 +1,8 @@
 <#
 Run as SYSTEM !!!
-(Use ".\PsExec.exe -i -s PowerShell.exe" to start a Powershell session as the System user).
+(Use for example ".\PsExec.exe -i -s PowerShell.exe" to start a Powershell session as the System user and execute this script).
 
-This will remove any references to the DSV print servers : 'dsv-p-prt01' and 'dsv-s-prt' in the 
+This will remove any references to the DSV print servers : 'dsv-p-prt01' and 'dsv-s-prt' in the
 'HKLM:\SYSTEM\CurrentControlSet\Enum\SWD\PRINTENUM' registry hive.
 
 Written by u0122713 @ 09/07/2018

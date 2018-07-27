@@ -6,7 +6,7 @@ Remove-DsvPrinter_as_administrator.ps1 script.
 # Show Write-Verbose statements
 $VerbosePreference = "Continue"
 
-$BACKUP_FOLDER = 'Backup'
+$BACKUP_FOLDER = 'Backup\Administrator'
 
 if (-Not (Test-Path $BACKUP_FOLDER)) {
     mkdir $BACKUP_FOLDER
