@@ -13,8 +13,8 @@ $VerbosePreference = "Continue"
 
 $DSV_PRINT_SERVERS = @('dsv-p-prt01', 'dsv-s-prt')
 
-<# 
-Tests if a registry value exists. Supports wild cards in the PropertyName parameter.
+<#
+Tests if a registry value exists. Supports wild cards in the name PropertyName parameter.
 #>
 function DoesItemPropertyExist([string]$LiteralPath, [string]$PropertyName) {
     if( -not (Test-Path -LiteralPath $LiteralPath -PathType Container) ) {
